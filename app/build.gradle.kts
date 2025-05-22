@@ -49,10 +49,11 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    // Dependencia para íconos extendidos de Material3
-    implementation("androidx.compose.material:material-icons-extended")
+    // 🔽 Agrega esta línea:
+    implementation("androidx.navigation:navigation-compose:2.7.7")
 
-    // 🔽 Coil para Jetpack Compose (vista previa de imágenes)
+
+    implementation("androidx.compose.material:material-icons-extended")
     implementation("io.coil-kt:coil-compose:2.5.0")
 
     testImplementation(libs.junit)

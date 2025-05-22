@@ -43,7 +43,7 @@ fun ListaSeleccionadaPantalla(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .border(5.dp, Color(0xFF1976D2), RoundedCornerShape(16.dp))
+
     ) {
         // Botón de volver (icono izquierdo)
         IconButton(
@@ -186,23 +186,5 @@ fun ListaSeleccionadaPantalla(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun ListaSeleccionadaPreview() {
-    val productosEjemplo = listOf(
-        ProductoEnLista("Manzanas", 5, R.drawable.logo),
-        ProductoEnLista("Pan", 2, R.drawable.logo),
-        ProductoEnLista("Leche", 1, R.drawable.logo)
-    )
 
-    ListaSeleccionadaPantalla(
-        nombreLista = "Lista del Super",
-        descripcionLista = "Productos para la semana",
-        productos = productosEjemplo,
-        onVolver = {},
-        onIrAlInicio = {},
-        onAgregarProducto = {},
-        onEditarProducto = {}
-    )
-}
 

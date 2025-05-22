@@ -1,7 +1,6 @@
 package com.example.stockeasy.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -16,8 +15,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.foundation.shape.RoundedCornerShape
 import com.example.stockeasy.R
 
 /* ---------- DATOS ---------- */
@@ -41,7 +38,6 @@ fun HistorialVentasPantalla(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .border(5.dp, Color(0xFF1976D2), RoundedCornerShape(16.dp))
     ) {
         /* Botón volver al menú (icono) */
         IconButton(
@@ -158,18 +154,4 @@ fun HistorialVentasPantalla(
     }
 }
 
-/* ---------- PREVIEW ---------- */
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun HistorialVentasPreview() {
-    val ejemploVentas = listOf(
-        Venta("2025-05-14", "Producto A", "Lista 1", "3"),
-        Venta("2025-05-13", "Producto B", "Lista 2", "1"),
-        Venta("2025-05-12", "Producto C", "Lista Especial", "6")
-    )
-    HistorialVentasPantalla(
-        ventas = ejemploVentas,
-        onAgregarVenta = {},
-        onVolverAlMenu = {}
-    )
-}
+

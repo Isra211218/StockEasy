@@ -22,7 +22,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.stockeasy.R
@@ -43,6 +42,8 @@ fun RegistroPantalla(
 
     var mostrarContrasena by remember { mutableStateOf(false) }
     var mostrarConfirmar by remember { mutableStateOf(false) }
+
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -158,10 +159,25 @@ fun RegistroPantalla(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        errorMessage?.let {
+            Text(
+                text = it,
+                color = Color.Red,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
+
         Button(
             onClick = {
-                if (contrasena == confirmarContrasena && nombre.isNotBlank() && correo.isNotBlank()) {
-                    onRegisterSuccess()
+                // Validación
+                if (nombre.isBlank() || correo.isBlank() || contrasena.isBlank() || confirmarContrasena.isBlank()) {
+                    errorMessage = "Todos los campos son obligatorios"
+                } else if (contrasena != confirmarContrasena) {
+                    errorMessage = "Las contraseñas no coinciden"
+                } else {
+                    errorMessage = null
+                    onRegisterSuccess() // Ir al menú principal
                 }
             },
             modifier = Modifier
@@ -180,10 +196,4 @@ fun RegistroPantalla(
             modifier = Modifier.clickable { onNavigateToLogin() }
         )
     }
-}
-
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun RegistroPantallaPreview() {
-    RegistroPantalla(onRegisterSuccess = {}, onNavigateToLogin = {})
 }

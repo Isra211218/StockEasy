@@ -26,7 +26,7 @@ import com.example.stockeasy.R
 fun AgregarListaPantalla(
     onGuardarLista: (String, String) -> Unit,
     onVolver: () -> Unit,
-    onIrAlInicio: () -> Unit
+    onIrAlInicio: () -> Unit,
 ) {
     var nombreLista by remember { mutableStateOf("") }
     var descripcionLista by remember { mutableStateOf("") }
@@ -40,9 +40,8 @@ fun AgregarListaPantalla(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .border(5.dp, Color(0xFF1976D2), RoundedCornerShape(16.dp))
     ) {
-        // Botón regresar (izquierda)
+        // Botón regresar
         IconButton(
             onClick = onVolver,
             modifier = Modifier
@@ -56,7 +55,7 @@ fun AgregarListaPantalla(
             )
         }
 
-        // Botón home (derecha)
+        // Botón home
         IconButton(
             onClick = onIrAlInicio,
             modifier = Modifier
@@ -121,7 +120,7 @@ fun AgregarListaPantalla(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo: Descripción de la lista
+            // Campo: Descripción
             OutlinedTextField(
                 value = descripcionLista,
                 onValueChange = {
@@ -166,18 +165,13 @@ fun AgregarListaPantalla(
                 Text("Guardar Lista", color = Color.White)
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+
             Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
 
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun AgregarListaPreview() {
-    AgregarListaPantalla(
-        onGuardarLista = { _, _ -> },
-        onVolver = {},
-        onIrAlInicio = {}
-    )
-}
+
 

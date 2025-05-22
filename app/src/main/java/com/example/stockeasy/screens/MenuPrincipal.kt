@@ -1,7 +1,6 @@
 package com.example.stockeasy.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -14,10 +13,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.foundation.shape.RoundedCornerShape
 import com.example.stockeasy.R
 
 @Composable
@@ -33,13 +31,12 @@ fun MenuPrincipalPantalla(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(scrollState)
-            .border(5.dp, Color(0xFF1976D2), RoundedCornerShape(16.dp)),
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(80.dp))
 
-        // Logo
+        /* ---------- Logo ---------- */
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = "Logo de la app",
@@ -52,7 +49,7 @@ fun MenuPrincipalPantalla(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // NUEVA LEYENDA
+        /* ---------- Leyenda ---------- */
         Text(
             text = "Diseñada para facilitar tu vida al tener control de tus espacios personales.",
             fontSize = 16.sp,
@@ -64,7 +61,7 @@ fun MenuPrincipalPantalla(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Botón: Listas
+        /* ---------- Botón Listas ---------- */
         MenuOption(
             iconResId = R.drawable.lista,
             text = "Listas",
@@ -73,16 +70,16 @@ fun MenuPrincipalPantalla(
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        // Botón: Historial de Ventas
+        /* ---------- Botón Historial de ventas ---------- */
         MenuOption(
             iconResId = R.drawable.historial,
             text = "Historial de Ventas",
             onClick = onNavigateToHistorialVentas
         )
 
-        Spacer(modifier = Modifier.height(240.dp)) // Separación antes de Editar perfil
+        Spacer(modifier = Modifier.weight(1f))  // Empuja lo siguiente al final
 
-        // Botón: Editar perfil
+        /* ---------- Botón Editar perfil ---------- */
         SmallButton(
             iconResId = R.drawable.usuario,
             text = "Editar perfil",
@@ -93,7 +90,7 @@ fun MenuPrincipalPantalla(
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        // Botón: Cerrar sesión
+        /* ---------- Botón Cerrar sesión ---------- */
         SmallButton(
             iconResId = R.drawable.exit,
             text = "Cerrar sesión",
@@ -168,7 +165,8 @@ fun SmallButton(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+/* --- Preview opcional ---
+@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun MenuPrincipalPreview() {
     MenuPrincipalPantalla(
@@ -178,3 +176,5 @@ fun MenuPrincipalPreview() {
         onLogout = {}
     )
 }
+*/
+

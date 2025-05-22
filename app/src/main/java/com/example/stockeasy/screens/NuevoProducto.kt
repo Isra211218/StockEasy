@@ -1,7 +1,6 @@
 package com.example.stockeasy.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -16,8 +15,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.foundation.shape.RoundedCornerShape
 import com.example.stockeasy.R
 
 @Composable
@@ -28,17 +25,15 @@ fun NuevoProductoPantalla(
 ) {
     var nombre by remember { mutableStateOf("") }
     var cantidad by remember { mutableStateOf("") }
-
-    val scrollState = rememberScrollState()
     val camposValidos = nombre.isNotBlank() && cantidad.isNotBlank()
+    val scrollState = rememberScrollState()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .border(5.dp, Color(0xFF1976D2), RoundedCornerShape(16.dp))
     ) {
-        // Icono volver
+        // Botón Volver
         IconButton(
             onClick = onVolver,
             modifier = Modifier
@@ -52,7 +47,7 @@ fun NuevoProductoPantalla(
             )
         }
 
-        // Icono home
+        // Botón Inicio
         IconButton(
             onClick = onIrAlInicio,
             modifier = Modifier
@@ -66,6 +61,7 @@ fun NuevoProductoPantalla(
             )
         }
 
+        // Contenido Principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -75,7 +71,6 @@ fun NuevoProductoPantalla(
         ) {
             Spacer(modifier = Modifier.height(80.dp))
 
-            // Logo
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
@@ -95,7 +90,7 @@ fun NuevoProductoPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Campo: Nombre del producto con ícono dentro del campo
+            // Campo: Nombre del producto
             OutlinedTextField(
                 value = nombre,
                 onValueChange = { nombre = it },
@@ -113,7 +108,7 @@ fun NuevoProductoPantalla(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo: Cantidad con ícono dentro del campo
+            // Campo: Existencias
             OutlinedTextField(
                 value = cantidad,
                 onValueChange = { cantidad = it },
@@ -131,7 +126,7 @@ fun NuevoProductoPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Botón para subir imagen
+            // Botón: Subir imagen
             Button(
                 onClick = { /* lógica para subir imagen */ },
                 modifier = Modifier
@@ -152,20 +147,16 @@ fun NuevoProductoPantalla(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Botón Guardar
+            // Botón: Guardar producto
             Button(
                 onClick = {
-                    if (camposValidos) {
-                        onGuardarProducto(nombre, cantidad)
-                    }
+                    if (camposValidos) onGuardarProducto(nombre, cantidad)
                 },
+                enabled = camposValidos,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
-                enabled = camposValidos,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF2E7D6D)
-                )
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D6D))
             ) {
                 Text("Guardar Producto", color = Color.White)
             }
@@ -173,14 +164,4 @@ fun NuevoProductoPantalla(
             Spacer(modifier = Modifier.height(24.dp))
         }
     }
-}
-
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun NuevoProductoPreview() {
-    NuevoProductoPantalla(
-        onGuardarProducto = { _, _ -> },
-        onVolver = {},
-        onIrAlInicio = {}
-    )
 }

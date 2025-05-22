@@ -30,17 +30,21 @@ fun EditarProductoPantalla(
 ) {
     var nombre by remember { mutableStateOf("") }
     var cantidad by remember { mutableStateOf("") }
+    var imagenCambiada by remember { mutableStateOf(false) }
 
-    val camposValidos = nombre.isNotBlank() && cantidad.isNotBlank()
+    // Verifica si hubo cambios respecto a los valores iniciales
+    val cambiosHechos = (nombre.isNotBlank() && nombre != productoInicial) ||
+            (cantidad.isNotBlank() && cantidad != cantidadInicial) ||
+            imagenCambiada
+
     val scrollState = rememberScrollState()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .border(5.dp, Color(0xFF1976D2), RoundedCornerShape(16.dp))
     ) {
-        // Icono de volver
+        // Iconos de navegación
         IconButton(
             onClick = onVolver,
             modifier = Modifier
@@ -54,7 +58,6 @@ fun EditarProductoPantalla(
             )
         }
 
-        // Icono home
         IconButton(
             onClick = onIrAlInicio,
             modifier = Modifier
@@ -96,7 +99,6 @@ fun EditarProductoPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Datos actuales en negritas
             Text(
                 text = "Nombre actual: $productoInicial",
                 color = Color.Black,
@@ -114,7 +116,6 @@ fun EditarProductoPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Campo nuevo nombre del producto
             OutlinedTextField(
                 value = nombre,
                 onValueChange = { nombre = it },
@@ -132,7 +133,6 @@ fun EditarProductoPantalla(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo nueva cantidad
             OutlinedTextField(
                 value = cantidad,
                 onValueChange = { cantidad = it },
@@ -150,9 +150,11 @@ fun EditarProductoPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Botón cambiar imagen
             Button(
-                onClick = { /* lógica de cambio de imagen */ },
+                onClick = {
+                    imagenCambiada = true // Marca que la imagen fue cambiada
+                    // Aquí puedes agregar la lógica real de selección de imagen
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -171,17 +173,14 @@ fun EditarProductoPantalla(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Botón guardar
             Button(
                 onClick = {
-                    if (camposValidos) {
-                        onGuardarCambios(nombre, cantidad)
-                    }
+                    onGuardarCambios(nombre.ifBlank { productoInicial }, cantidad.ifBlank { cantidadInicial })
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
-                enabled = camposValidos,
+                enabled = cambiosHechos,
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D6D))
             ) {
                 Text("Guardar Cambios", color = Color.White)
@@ -192,14 +191,4 @@ fun EditarProductoPantalla(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun EditarProductoPreview() {
-    EditarProductoPantalla(
-        productoInicial = "Tornillos",
-        cantidadInicial = "50",
-        onGuardarCambios = { _, _ -> },
-        onVolver = {},
-        onIrAlInicio = {}
-    )
-}
+

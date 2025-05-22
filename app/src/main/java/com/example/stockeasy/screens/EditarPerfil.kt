@@ -29,13 +29,15 @@ import com.example.stockeasy.R
 
 @Composable
 fun EditarPerfilPantalla(
-    nombreUsuario: String = "Juan Pérez",
-    correoUsuario: String = "juan.perez@example.com",
+    nombreUsuario: String,
+    correoUsuario: String,
     onGuardarCambios: () -> Unit,
     onVolverAlMenu: () -> Unit
 ) {
     var nuevaContrasena by remember { mutableStateOf("") }
     var confirmarContrasena by remember { mutableStateOf("") }
+// Al inicio del composable:
+    var mensajeError by remember { mutableStateOf("") }
 
     var nuevaContrasenaVisible by remember { mutableStateOf(false) }
     var confirmarContrasenaVisible by remember { mutableStateOf(false) }
@@ -46,7 +48,6 @@ fun EditarPerfilPantalla(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .border(5.dp, Color(0xFF1976D2), RoundedCornerShape(16.dp))
     ) {
         // Botón Volver (icono) arriba a la derecha
         IconButton(
@@ -56,7 +57,7 @@ fun EditarPerfilPantalla(
                 .padding(12.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.home), // Usa el ícono que prefieras para "volver"
+                painter = painterResource(id = R.drawable.home),
                 contentDescription = "Volver",
                 modifier = Modifier.size(28.dp)
             )
@@ -151,7 +152,16 @@ fun EditarPerfilPantalla(
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
-            )
+            )// Mostrar mensaje de error si las contraseñas no coinciden
+            if (mensajeError.isNotEmpty()) {
+                Text(
+                    text = mensajeError,
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -159,7 +169,10 @@ fun EditarPerfilPantalla(
             Button(
                 onClick = {
                     if (nuevaContrasena == confirmarContrasena && nuevaContrasena.isNotBlank()) {
+                        mensajeError = ""
                         onGuardarCambios()
+                    } else {
+                        mensajeError = "La contraseña no coincide"
                     }
                 },
                 modifier = Modifier
@@ -175,11 +188,3 @@ fun EditarPerfilPantalla(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun EditarPerfilPreview() {
-    EditarPerfilPantalla(
-        onGuardarCambios = {},
-        onVolverAlMenu = {}
-    )
-}

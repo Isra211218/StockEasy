@@ -38,8 +38,8 @@ fun InicioSesionPantalla(
 
     var correo by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
-
     var mostrarContrasena by remember { mutableStateOf(false) }
+    var mostrarError by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -83,9 +83,13 @@ fun InicioSesionPantalla(
             modifier = Modifier.padding(vertical = 8.dp)
         )
 
+        /* ---------- Correo ---------- */
         OutlinedTextField(
             value = correo,
-            onValueChange = { correo = it },
+            onValueChange = {
+                correo = it
+                if (mostrarError) mostrarError = false
+            },
             label = { Text("Correo electrónico") },
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(
@@ -96,12 +100,17 @@ fun InicioSesionPantalla(
             modifier = Modifier.fillMaxWidth()
         )
 
+        /* ---------- Contraseña ---------- */
         OutlinedTextField(
             value = contrasena,
-            onValueChange = { contrasena = it },
+            onValueChange = {
+                contrasena = it
+                if (mostrarError) mostrarError = false
+            },
             label = { Text("Contraseña") },
             singleLine = true,
-            visualTransformation = if (mostrarContrasena) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation =
+                if (mostrarContrasena) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
@@ -110,19 +119,39 @@ fun InicioSesionPantalla(
             trailingIcon = {
                 IconButton(onClick = { mostrarContrasena = !mostrarContrasena }) {
                     Icon(
-                        imageVector = if (mostrarContrasena) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                        contentDescription = if (mostrarContrasena) "Ocultar contraseña" else "Mostrar contraseña"
+                        imageVector = if (mostrarContrasena)
+                            Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                        contentDescription =
+                            if (mostrarContrasena) "Ocultar contraseña" else "Mostrar contraseña"
                     )
                 }
             },
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* ---------- Mensaje de error ---------- */
+        if (mostrarError) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Ingresa un correo y contraseña",
+                color = Color.Red,
+                fontSize = 14.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 4.dp),
+                textAlign = TextAlign.Start
+            )
+        }
 
+        Spacer(modifier = Modifier.height(8.dp))
+
+        /* ---------- Botón Iniciar sesión ---------- */
         Button(
             onClick = {
-                if (correo.isNotBlank() && contrasena.isNotBlank()) {
+                if (correo.isBlank() || contrasena.isBlank()) {
+                    mostrarError = true
+                } else {
+                    mostrarError = false
                     onLoginSuccess()
                 }
             },
@@ -136,6 +165,7 @@ fun InicioSesionPantalla(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        /* ---------- Link a registro ---------- */
         Text(
             text = "¿No tienes cuenta? REGÍSTRATE",
             color = Color(0xFF2E7D6D),
@@ -144,8 +174,11 @@ fun InicioSesionPantalla(
     }
 }
 
+/* --- Preview opcional ---
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun InicioSesionPantallaPreview() {
     InicioSesionPantalla(onLoginSuccess = {}, onNavigateToRegister = {})
 }
+*/
+
