@@ -1,7 +1,7 @@
 package com.example.stockeasy.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,8 +18,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.foundation.shape.RoundedCornerShape
 import com.example.stockeasy.R
 
 @Composable
@@ -43,7 +41,10 @@ fun AgregarListaPantalla(
     ) {
         // Botón regresar
         IconButton(
-            onClick = onVolver,
+            onClick = {
+                println("Botón Volver presionado")
+                onVolver()
+            },
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(12.dp)
@@ -57,7 +58,10 @@ fun AgregarListaPantalla(
 
         // Botón home
         IconButton(
-            onClick = onIrAlInicio,
+            onClick = {
+                println("Botón Home presionado")
+                onIrAlInicio()
+            },
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(12.dp)
@@ -165,13 +169,7 @@ fun AgregarListaPantalla(
                 Text("Guardar Lista", color = Color.White)
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }
-
-
-

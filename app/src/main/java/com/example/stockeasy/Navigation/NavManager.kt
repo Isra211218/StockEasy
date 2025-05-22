@@ -7,9 +7,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.stockeasy.screens.*
 
-
-
-
 object Rutas {
     const val INICIO_SESION    = "inicio_sesion"
     const val REGISTRO         = "registro"
@@ -22,11 +19,7 @@ object Rutas {
     const val AGREGAR_VENTA    = "agregar_venta"
     const val EDITAR_PRODUCTO = "editar_producto"
     const val NUEVO_PRODUCTO = "nuevo_producto"
-
-
 }
-
-
 
 @Composable
 fun NavManager(navController: NavHostController) {
@@ -107,10 +100,13 @@ fun NavManager(navController: NavHostController) {
                     navController.navigate(Rutas.AGREGAR_LISTA)
                 },
                 onVolverAlMenu = {
-                    navController.popBackStack()
+                    navController.navigate(Rutas.MENU_PRINCIPAL) {
+                        popUpTo(Rutas.MENU_PRINCIPAL) { inclusive = false }
+                    }
                 }
             )
         }
+
 
         //Lista seleccionada
         composable("${Rutas.LISTA_SELECCIONADA}/{nombreLista}") { backStackEntry ->
@@ -218,6 +214,3 @@ fun NavManager(navController: NavHostController) {
         }
     }
 }
-
-
-

@@ -15,9 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.style.TextAlign
-import com.example.stockeasy.Navigation.Rutas
 import com.example.stockeasy.R
-
 
 data class Lista(val nombre: String)
 
@@ -36,20 +34,7 @@ fun MenuListasPantalla(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Botón Home
-        IconButton(
-            onClick = onVolverAlMenu,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(top = 12.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.home),
-                contentDescription = "Volver al menú",
-                modifier = Modifier.size(28.dp)
-            )
-        }
-
+        // Contenido principal desplazable
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -96,7 +81,7 @@ fun MenuListasPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Listas
+            // Listas filtradas
             val listasFiltradas = if (busqueda.isBlank()) listas else listas.filter {
                 it.nombre.contains(busqueda, ignoreCase = true)
             }
@@ -164,8 +149,25 @@ fun MenuListasPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
         }
+
+        // Botón Home funcional superpuesto
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(4.dp)
+        ) {
+            IconButton(
+                onClick = onVolverAlMenu,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 8.dp, end = 4.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.home),
+                    contentDescription = "Volver al menú",
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+        }
     }
 }
-
-
-
