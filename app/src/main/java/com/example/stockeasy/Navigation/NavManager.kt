@@ -7,85 +7,63 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.stockeasy.screens.*
 
-object Rutas {
-    const val INICIO_SESION    = "inicio_sesion"
-    const val REGISTRO         = "registro"
-    const val MENU_PRINCIPAL   = "menu_principal"
-    const val MENU_LISTAS      = "menu_listas"
-    const val HISTORIAL_VENTAS = "historial_ventas"
-    const val EDITAR_PERFIL    = "editar_perfil"
-    const val LISTA_SELECCIONADA = "lista_seleccionada"
-    const val AGREGAR_LISTA = "agregar_lista"
-    const val AGREGAR_VENTA    = "agregar_venta"
-    const val EDITAR_PRODUCTO = "editar_producto"
-    const val NUEVO_PRODUCTO = "nuevo_producto"
-}
-
 @Composable
 fun NavManager(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Rutas.INICIO_SESION
+        startDestination = "inicio_sesion"
     ) {
-        // Login
-        composable(Rutas.INICIO_SESION) {
+        composable("inicio_sesion") {
             InicioSesionPantalla(
                 onLoginSuccess = {
-                    navController.navigate(Rutas.MENU_PRINCIPAL) {
-                        popUpTo(Rutas.INICIO_SESION) { inclusive = true }
+                    navController.navigate("menu_principal") {
+                        popUpTo("inicio_sesion") { inclusive = true }
                     }
                 },
                 onNavigateToRegister = {
-                    navController.navigate(Rutas.REGISTRO)
+                    navController.navigate("registro")
                 }
             )
         }
 
-        // Registro
-        composable(Rutas.REGISTRO) {
+        composable("registro") {
             RegistroPantalla(
                 onRegisterSuccess = {
-                    navController.navigate(Rutas.MENU_PRINCIPAL) {
-                        popUpTo(Rutas.INICIO_SESION) { inclusive = true }
+                    navController.navigate("menu_principal") {
+                        popUpTo("inicio_sesion") { inclusive = true }
                     }
                 },
                 onNavigateToLogin = { navController.popBackStack() }
             )
         }
 
-        // ── Menú principal ────────────────────────────────────────────────────────
-        composable(Rutas.MENU_PRINCIPAL) {
+        composable("menu_principal") {
             MenuPrincipalPantalla(
-                onNavigateToListas = { navController.navigate(Rutas.MENU_LISTAS) },
-                onNavigateToHistorialVentas = { navController.navigate(Rutas.HISTORIAL_VENTAS) },
-                onNavigateToEditarPerfil = {                       // ✔ IMPLEMENTADO
-                    navController.navigate(Rutas.EDITAR_PERFIL)
-                },
+                onNavigateToListas = { navController.navigate("menu_listas") },
+                onNavigateToHistorialVentas = { navController.navigate("historial_ventas") },
+                onNavigateToEditarPerfil = { navController.navigate("editar_perfil") },
                 onLogout = {
-                    navController.navigate(Rutas.INICIO_SESION) {
-                        popUpTo(Rutas.INICIO_SESION) { inclusive = true }
+                    navController.navigate("inicio_sesion") {
+                        popUpTo("inicio_sesion") { inclusive = true }
                     }
                 }
             )
         }
 
-        // ── Editar perfil ─────────────────────────────────────────────────────────
-        composable(Rutas.EDITAR_PERFIL) {
+        composable("editar_perfil") {
             EditarPerfilPantalla(
-                nombreUsuario = "",       // <-- usa tu ViewModel o estado real
+                nombreUsuario = "",
                 correoUsuario = "",
                 onGuardarCambios = { navController.popBackStack() },
                 onVolverAlMenu = {
-                    navController.navigate(Rutas.MENU_PRINCIPAL) {
-                        popUpTo(Rutas.MENU_PRINCIPAL) { inclusive = false }
+                    navController.navigate("menu_principal") {
+                        popUpTo("menu_principal") { inclusive = false }
                     }
                 }
             )
         }
 
-
-        // Menú Listas
-        composable(Rutas.MENU_LISTAS) {
+        composable("menu_listas") {
             MenuListasPantalla(
                 listas = listOf(
                     Lista("Inventario General"),
@@ -94,121 +72,104 @@ fun NavManager(navController: NavHostController) {
                 ),
                 onSeleccionarLista = { lista ->
                     val nombreCodificado = Uri.encode(lista.nombre)
-                    navController.navigate("${Rutas.LISTA_SELECCIONADA}/$nombreCodificado")
+                    navController.navigate("lista_seleccionada/$nombreCodificado")
                 },
                 onAgregarLista = {
-                    navController.navigate(Rutas.AGREGAR_LISTA)
+                    navController.navigate("agregar_lista")
                 },
                 onVolverAlMenu = {
-                    navController.navigate(Rutas.MENU_PRINCIPAL) {
-                        popUpTo(Rutas.MENU_PRINCIPAL) { inclusive = false }
-                    }
+                    navController.popBackStack()
                 }
             )
         }
 
-
-        //Lista seleccionada
-        composable("${Rutas.LISTA_SELECCIONADA}/{nombreLista}") { backStackEntry ->
+        composable("lista_seleccionada/{nombreLista}") { backStackEntry ->
             val nombreLista = backStackEntry.arguments?.getString("nombreLista") ?: ""
             ListaSeleccionadaPantalla(
                 nombreLista = nombreLista,
-                descripcionLista = "Descripción de $nombreLista", // puedes mejorar esto si tienes una descripción real
-                productos = listOf(), // podrías usar ViewModel o argumentos para productos reales
+                descripcionLista = "Descripción de $nombreLista",
+                productos = listOf(),
                 onVolver = { navController.popBackStack() },
                 onIrAlInicio = {
-                    navController.navigate(Rutas.MENU_PRINCIPAL) {
-                        popUpTo(Rutas.MENU_PRINCIPAL) { inclusive = false }
+                    navController.navigate("menu_principal") {
+                        popUpTo("menu_principal") { inclusive = false }
                     }
                 },
                 onAgregarProducto = {
-                    navController.navigate(Rutas.NUEVO_PRODUCTO) },
-                onEditarProducto = {
-                    navController.navigate(Rutas.EDITAR_PRODUCTO)
-                }
-            )
-        }
-
-        //Editar producto
-        composable(Rutas.EDITAR_PRODUCTO) {
-            EditarProductoPantalla(
-                productoInicial = "", // ← puedes ajustar según datos reales
-                cantidadInicial = "",
-                onGuardarCambios = { nuevoNombre, nuevaCantidad ->
-                    // Guardar cambios, mostrar mensaje, etc.
-                    navController.popBackStack() // Vuelve a la pantalla anterior
+                    navController.navigate("nuevo_producto")
                 },
-                onVolver = { navController.popBackStack() },
-                onIrAlInicio = {
-                    navController.navigate(Rutas.MENU_PRINCIPAL) {
-                        popUpTo(Rutas.MENU_PRINCIPAL) { inclusive = false }
-                    }
+                onEditarProducto = {
+                    navController.navigate("editar_producto")
                 }
             )
         }
 
-//Nuevo Producto
-        composable(Rutas.NUEVO_PRODUCTO) {
-            NuevoProductoPantalla(
-                onGuardarProducto = { nombre, cantidad ->
-                    // Lógica para guardar o volver
+        composable("editar_producto") {
+            EditarProductoPantalla(
+                productoInicial = "",
+                cantidadInicial = "",
+                onGuardarCambios = { _, _ ->
                     navController.popBackStack()
                 },
                 onVolver = { navController.popBackStack() },
                 onIrAlInicio = {
-                    navController.navigate(Rutas.MENU_PRINCIPAL) {
-                        popUpTo(Rutas.MENU_PRINCIPAL) { inclusive = false }
+                    navController.navigate("menu_principal") {
+                        popUpTo("menu_principal") { inclusive = false }
                     }
                 }
             )
         }
 
+        composable("nuevo_producto") {
+            NuevoProductoPantalla(
+                onGuardarProducto = { _, _ ->
+                    navController.popBackStack()
+                },
+                onVolver = { navController.popBackStack() },
+                onIrAlInicio = {
+                    navController.navigate("menu_principal") {
+                        popUpTo("menu_principal") { inclusive = false }
+                    }
+                }
+            )
+        }
 
-// 🔹 Pantalla para agregar venta
-        composable(Rutas.AGREGAR_VENTA) {
+        composable("agregar_venta") {
             AgregarVentaPantalla(
-                onGuardarVenta = { producto, cantidad, fecha, lista ->
-                    // Aquí puedes manejar el guardado real y volver atrás
-                    navController.popBackStack() // o mostrar mensaje, etc.
+                onGuardarVenta = { _, _, _, _ ->
+                    navController.popBackStack()
                 },
                 onVolverAHistorial = {
                     navController.popBackStack()
                 },
                 onVolverAlMenu = {
-                    navController.navigate(Rutas.MENU_PRINCIPAL) {
-                        popUpTo(Rutas.MENU_PRINCIPAL) { inclusive = false }
+                    navController.navigate("menu_principal") {
+                        popUpTo("menu_principal") { inclusive = false }
                     }
                 }
             )
         }
 
-
-// 🔹 Pantalla para agregar lista
-        composable(Rutas.AGREGAR_LISTA) {
+        composable("agregar_lista") {
             AgregarListaPantalla(
                 onGuardarLista = { _, _ -> navController.popBackStack() },
                 onVolver = { navController.popBackStack() },
                 onIrAlInicio = {
-                    navController.navigate(Rutas.MENU_PRINCIPAL) {
-                        popUpTo(Rutas.MENU_PRINCIPAL) { inclusive = false }
+                    navController.navigate("menu_principal") {
+                        popUpTo("menu_principal") { inclusive = false }
                     }
                 }
             )
         }
 
-
-
-        // 🔹 NUEVA COMPOSABLE: Historial de Ventas
-        composable(Rutas.HISTORIAL_VENTAS) {
+        composable("historial_ventas") {
             HistorialVentasPantalla(
                 ventas = listOf(),
                 onAgregarVenta = {
-                    navController.navigate(Rutas.AGREGAR_VENTA)
+                    navController.navigate("agregar_venta")
                 },
                 onVolverAlMenu = {
-                    navController.navigate(Rutas.MENU_PRINCIPAL) {
-                        popUpTo(Rutas.MENU_PRINCIPAL) { inclusive = false }
-                    }
+                    navController.popBackStack()
                 }
             )
         }
