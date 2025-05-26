@@ -40,36 +40,7 @@ fun ListaSeleccionadaPantalla(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-
     ) {
-        // Botón de volver (icono izquierdo)
-        IconButton(
-            onClick = onVolver,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(12.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.regreso),
-                contentDescription = "Volver",
-                modifier = Modifier.size(28.dp)
-            )
-        }
-
-        // Botón de home (icono derecho)
-        IconButton(
-            onClick = onIrAlInicio,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(12.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.home),
-                contentDescription = "Inicio",
-                modifier = Modifier.size(28.dp)
-            )
-        }
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -158,13 +129,14 @@ fun ListaSeleccionadaPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Botones de acción
+            // Botones de acción con mejor distribución
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
                     onClick = onEditarProducto,
+                    modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1976D2))
                 ) {
                     Text("Editar Producto", color = Color.White)
@@ -172,6 +144,7 @@ fun ListaSeleccionadaPantalla(
 
                 Button(
                     onClick = onAgregarProducto,
+                    modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D6D))
                 ) {
                     Text("Añadir Producto", color = Color.White)
@@ -180,8 +153,33 @@ fun ListaSeleccionadaPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
         }
+
+        // Botón de volver (izquierda arriba)
+        IconButton(
+            onClick = onVolver,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(12.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.regreso),
+                contentDescription = "Volver",
+                modifier = Modifier.size(28.dp)
+            )
+        }
+
+        // Botón de home (derecha arriba)
+        IconButton(
+            onClick = onIrAlInicio,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(12.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.home),
+                contentDescription = "Inicio",
+                modifier = Modifier.size(28.dp)
+            )
+        }
     }
 }
-
-
-

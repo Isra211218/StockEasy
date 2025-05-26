@@ -33,7 +33,6 @@ fun EditarPerfilPantalla(
 ) {
     var nuevaContrasena by remember { mutableStateOf("") }
     var confirmarContrasena by remember { mutableStateOf("") }
-// Al inicio del composable:
     var mensajeError by remember { mutableStateOf("") }
 
     var nuevaContrasenaVisible by remember { mutableStateOf(false) }
@@ -46,36 +45,22 @@ fun EditarPerfilPantalla(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Botón Volver (icono) arriba a la derecha
-        IconButton(
-            onClick = onVolverAlMenu,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(12.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.home),
-                contentDescription = "Volver",
-                modifier = Modifier.size(28.dp)
-            )
-        }
-
+        // Contenido scrollable principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .verticalScroll(scrollState),
+                .verticalScroll(scrollState)
+                .padding(top = 64.dp, start = 16.dp, end = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp)
-                    .padding(vertical = 16.dp),
+                    .height(160.dp),
                 contentScale = ContentScale.Fit
             )
 
@@ -91,7 +76,6 @@ fun EditarPerfilPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Campo: Nombre (no editable)
             OutlinedTextField(
                 value = nombreUsuario,
                 onValueChange = {},
@@ -103,7 +87,6 @@ fun EditarPerfilPantalla(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo: Correo (no editable)
             OutlinedTextField(
                 value = correoUsuario,
                 onValueChange = {},
@@ -115,7 +98,6 @@ fun EditarPerfilPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Campo: Nueva contraseña
             OutlinedTextField(
                 value = nuevaContrasena,
                 onValueChange = { nuevaContrasena = it },
@@ -134,7 +116,6 @@ fun EditarPerfilPantalla(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo: Confirmar nueva contraseña
             OutlinedTextField(
                 value = confirmarContrasena,
                 onValueChange = { confirmarContrasena = it },
@@ -149,7 +130,8 @@ fun EditarPerfilPantalla(
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
-            )// Mostrar mensaje de error si las contraseñas no coinciden
+            )
+
             if (mensajeError.isNotEmpty()) {
                 Text(
                     text = mensajeError,
@@ -159,10 +141,8 @@ fun EditarPerfilPantalla(
                 )
             }
 
-
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Botón: Guardar cambios
             Button(
                 onClick = {
                     if (nuevaContrasena == confirmarContrasena && nuevaContrasena.isNotBlank()) {
@@ -182,6 +162,25 @@ fun EditarPerfilPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
         }
+
+        // Botón Home funcional superpuesto, fuera del scroll
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(4.dp)
+        ) {
+            IconButton(
+                onClick = onVolverAlMenu,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 8.dp, end = 4.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.home),
+                    contentDescription = "Volver al menú",
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+        }
     }
 }
-

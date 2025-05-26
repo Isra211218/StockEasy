@@ -1,7 +1,6 @@
 package com.example.stockeasy.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -39,58 +38,25 @@ fun AgregarListaPantalla(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Botón regresar
-        IconButton(
-            onClick = {
-                println("Botón Volver presionado")
-                onVolver()
-            },
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(12.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.regreso),
-                contentDescription = "Volver atrás",
-                modifier = Modifier.size(28.dp)
-            )
-        }
-
-        // Botón home
-        IconButton(
-            onClick = {
-                println("Botón Home presionado")
-                onIrAlInicio()
-            },
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(12.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.home),
-                contentDescription = "Ir a inicio",
-                modifier = Modifier.size(28.dp)
-            )
-        }
-
+        // Contenido principal desplazable
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .verticalScroll(scrollState),
+                .verticalScroll(scrollState)
+                .padding(top = 64.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(80.dp))
-
+            // Logo
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp)
-                    .padding(vertical = 16.dp),
+                    .height(160.dp),
                 contentScale = ContentScale.Fit
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = "Agregar Lista",
@@ -102,7 +68,6 @@ fun AgregarListaPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Campo: Nombre de la lista
             OutlinedTextField(
                 value = nombreLista,
                 onValueChange = {
@@ -124,7 +89,6 @@ fun AgregarListaPantalla(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo: Descripción
             OutlinedTextField(
                 value = descripcionLista,
                 onValueChange = {
@@ -148,7 +112,6 @@ fun AgregarListaPantalla(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Botón: Guardar Lista
             Button(
                 onClick = {
                     val nombreValido = nombreLista.isNotBlank()
@@ -170,6 +133,34 @@ fun AgregarListaPantalla(
             }
 
             Spacer(modifier = Modifier.height(40.dp))
+        }
+
+        // Botón de volver
+        IconButton(
+            onClick = onVolver,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(top = 8.dp, start = 4.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.regreso),
+                contentDescription = "Volver atrás",
+                modifier = Modifier.size(28.dp)
+            )
+        }
+
+        // Botón de inicio (Home)
+        IconButton(
+            onClick = onIrAlInicio,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 8.dp, end = 4.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.home),
+                contentDescription = "Ir a inicio",
+                modifier = Modifier.size(28.dp)
+            )
         }
     }
 }

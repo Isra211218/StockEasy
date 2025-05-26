@@ -33,35 +33,6 @@ fun NuevoProductoPantalla(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Botón Volver
-        IconButton(
-            onClick = onVolver,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(12.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.regreso),
-                contentDescription = "Volver",
-                modifier = Modifier.size(28.dp)
-            )
-        }
-
-        // Botón Inicio
-        IconButton(
-            onClick = onIrAlInicio,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(12.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.home),
-                contentDescription = "Inicio",
-                modifier = Modifier.size(28.dp)
-            )
-        }
-
-        // Contenido Principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -162,6 +133,34 @@ fun NuevoProductoPantalla(
             }
 
             Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        // Botón Volver (izquierda arriba)
+        IconButton(
+            onClick = onVolver,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(12.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.regreso),
+                contentDescription = "Volver",
+                modifier = Modifier.size(28.dp)
+            )
+        }
+
+        // Botón Inicio (derecha arriba)
+        IconButton(
+            onClick = onIrAlInicio,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(12.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.home),
+                contentDescription = "Inicio",
+                modifier = Modifier.size(28.dp)
+            )
         }
     }
 }

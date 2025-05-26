@@ -35,34 +35,6 @@ fun AgregarVentaPantalla(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Botón regresar (izquierda)
-        IconButton(
-            onClick = onVolverAHistorial,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(12.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.regreso),
-                contentDescription = "Volver",
-                modifier = Modifier.size(28.dp)
-            )
-        }
-
-        // Botón home (derecha)
-        IconButton(
-            onClick = onVolverAlMenu,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(12.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.home),
-                contentDescription = "Menú principal",
-                modifier = Modifier.size(28.dp)
-            )
-        }
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -150,6 +122,34 @@ fun AgregarVentaPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
         }
+
+        // Botón regresar (izquierda arriba)
+        IconButton(
+            onClick = onVolverAHistorial,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(12.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.regreso),
+                contentDescription = "Volver",
+                modifier = Modifier.size(28.dp)
+            )
+        }
+
+        // Botón home (derecha arriba)
+        IconButton(
+            onClick = onVolverAlMenu,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(12.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.home),
+                contentDescription = "Menú principal",
+                modifier = Modifier.size(28.dp)
+            )
+        }
     }
 }
 
@@ -175,5 +175,3 @@ fun CampoConIcono(
         modifier = Modifier.fillMaxWidth()
     )
 }
-
-

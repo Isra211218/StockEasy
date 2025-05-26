@@ -39,30 +39,17 @@ fun HistorialVentasPantalla(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        /* Botón volver al menú (icono) */
-        IconButton(
-            onClick = onVolverAlMenu,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(12.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.home),
-                contentDescription = "Volver al menú",
-                modifier = Modifier.size(28.dp)
-            )
-        }
-
+        // Contenido principal desplazable
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .verticalScroll(scrollState),
+                .verticalScroll(scrollState)
+                .padding(top = 64.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            /* Logo */
+            // Logo
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
@@ -85,7 +72,7 @@ fun HistorialVentasPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            /* Lista de ventas */
+            // Lista de ventas
             if (ventas.isEmpty()) {
                 Text(
                     text = "No hay ventas registradas.",
@@ -102,23 +89,19 @@ fun HistorialVentasPantalla(
                         colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            /* Producto - primero, negritas, negro */
                             Text(
                                 text = "Producto: ${venta.producto}",
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Black
                             )
-                            /* Cantidad - segundo, sin negritas, negro */
                             Text(
                                 text = "Cantidad: ${venta.cantidad}",
                                 color = Color.Black
                             )
-                            /* Fecha - tercero, sin negritas, negro */
                             Text(
                                 text = "Fecha: ${venta.fecha}",
                                 color = Color.Black
                             )
-                            /* Lista - cuarto, color verde/azulado, sin negritas */
                             Text(
                                 text = "Lista: ${venta.lista}",
                                 color = Color(0xFF2E7D6D)
@@ -130,7 +113,7 @@ fun HistorialVentasPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            /* Botón AGREGAR VENTA */
+            // Botón Agregar Venta
             Button(
                 onClick = onAgregarVenta,
                 modifier = Modifier
@@ -140,7 +123,7 @@ fun HistorialVentasPantalla(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
-                        painter = painterResource(id = R.drawable.venta), // ícono que colocarás tú
+                        painter = painterResource(id = R.drawable.venta),
                         contentDescription = "Agregar venta",
                         modifier = Modifier.size(24.dp)
                     )
@@ -151,7 +134,19 @@ fun HistorialVentasPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
         }
+
+        // Botón Home funcional (arriba a la derecha)
+        IconButton(
+            onClick = onVolverAlMenu,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 8.dp, end = 4.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.home),
+                contentDescription = "Volver al menú",
+                modifier = Modifier.size(28.dp)
+            )
+        }
     }
 }
-
-

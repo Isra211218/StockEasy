@@ -25,11 +25,11 @@ fun EditarProductoPantalla(
     onVolver: () -> Unit,
     onIrAlInicio: () -> Unit
 ) {
-    var nombre by remember { mutableStateOf("") }
-    var cantidad by remember { mutableStateOf("") }
+    var nombre by remember { mutableStateOf(productoInicial) }
+    var cantidad by remember { mutableStateOf(cantidadInicial) }
     var imagenCambiada by remember { mutableStateOf(false) }
 
-    // Verifica si hubo cambios respecto a los valores iniciales
+    // Detecta si hay cambios para habilitar botón guardar
     val cambiosHechos = (nombre.isNotBlank() && nombre != productoInicial) ||
             (cantidad.isNotBlank() && cantidad != cantidadInicial) ||
             imagenCambiada
@@ -41,33 +41,6 @@ fun EditarProductoPantalla(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Iconos de navegación
-        IconButton(
-            onClick = onVolver,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(12.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.regreso),
-                contentDescription = "Volver",
-                modifier = Modifier.size(28.dp)
-            )
-        }
-
-        IconButton(
-            onClick = onIrAlInicio,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(12.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.home),
-                contentDescription = "Inicio",
-                modifier = Modifier.size(28.dp)
-            )
-        }
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -117,14 +90,14 @@ fun EditarProductoPantalla(
                 value = nombre,
                 onValueChange = { nombre = it },
                 label = { Text("Nuevo nombre del producto") },
-                singleLine = true,
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.producto),
-                        contentDescription = "Icono Producto",
-                        modifier = Modifier.size(20.dp)
+                        contentDescription = "Producto",
+                        modifier = Modifier.size(30.dp)
                     )
                 },
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -134,23 +107,23 @@ fun EditarProductoPantalla(
                 value = cantidad,
                 onValueChange = { cantidad = it },
                 label = { Text("Nueva cantidad de existencias") },
-                singleLine = true,
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.cantidad),
-                        contentDescription = "Icono Cantidad",
-                        modifier = Modifier.size(20.dp)
+                        contentDescription = "Cantidad",
+                        modifier = Modifier.size(30.dp)
                     )
                 },
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Botón para cambiar imagen (placeholder)
             Button(
                 onClick = {
-                    imagenCambiada = true // Marca que la imagen fue cambiada
-                    // Aquí puedes agregar la lógica real de selección de imagen
+                    imagenCambiada = true // Aquí la lógica real para cambiar imagen
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -170,14 +143,15 @@ fun EditarProductoPantalla(
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            // Botón Guardar cambios, habilitado sólo si hay cambios
             Button(
                 onClick = {
-                    onGuardarCambios(nombre.ifBlank { productoInicial }, cantidad.ifBlank { cantidadInicial })
+                    onGuardarCambios(nombre, cantidad)
                 },
+                enabled = cambiosHechos,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
-                enabled = cambiosHechos,
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D6D))
             ) {
                 Text("Guardar Cambios", color = Color.White)
@@ -185,7 +159,33 @@ fun EditarProductoPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
         }
+
+        // Botón Volver (esquina superior izquierda)
+        IconButton(
+            onClick = onVolver,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(12.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.regreso),
+                contentDescription = "Volver",
+                modifier = Modifier.size(28.dp)
+            )
+        }
+
+        // Botón Inicio (esquina superior derecha)
+        IconButton(
+            onClick = onIrAlInicio,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(12.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.home),
+                contentDescription = "Inicio",
+                modifier = Modifier.size(28.dp)
+            )
+        }
     }
 }
-
-

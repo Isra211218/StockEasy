@@ -153,7 +153,11 @@ fun NavManager(navController: NavHostController) {
         composable("agregar_lista") {
             AgregarListaPantalla(
                 onGuardarLista = { _, _ -> navController.popBackStack() },
-                onVolver = { navController.popBackStack() },
+                onVolver = {
+                    navController.navigate("menu_listas") {
+                        popUpTo("agregar_lista") { inclusive = true }
+                    }
+                },
                 onIrAlInicio = {
                     navController.navigate("menu_principal") {
                         popUpTo("menu_principal") { inclusive = false }
@@ -161,6 +165,7 @@ fun NavManager(navController: NavHostController) {
                 }
             )
         }
+
 
         composable("historial_ventas") {
             HistorialVentasPantalla(
