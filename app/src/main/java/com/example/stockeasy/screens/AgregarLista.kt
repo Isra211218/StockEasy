@@ -28,7 +28,7 @@ import com.example.stockeasy.viewmodel.ListaViewModel
 fun AgregarListaPantalla(
     onVolver: () -> Unit,
     onIrAlInicio: () -> Unit,
-    onGuardarLista: () -> Boolean
+    onGuardarLista: () -> Boolean // Este método debe hacer la navegación a menu_listas
 ) {
     val context = LocalContext.current
     val viewModel: ListaViewModel = viewModel(
@@ -128,9 +128,9 @@ fun AgregarListaPantalla(
                     mostrarErrorNombre = !nombreValido
                     mostrarErrorDescripcion = !descripcionValida
 
-                    if (nombreValido && descripcionValida && onGuardarLista()) {
+                    if (nombreValido && descripcionValida) {
                         viewModel.agregarLista(nombreLista, descripcionLista) {
-                            onVolver()
+                            onGuardarLista() // ✅ Esta es la navegación correcta después de guardar
                         }
                     }
                 },

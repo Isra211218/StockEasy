@@ -1,6 +1,7 @@
 package com.example.stockeasy.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -91,7 +92,8 @@ fun MenuListasPantalla(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 6.dp),
+                            .padding(vertical = 6.dp)
+                            .clickable { onSeleccionarLista(lista) },
                         colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))
                     ) {
                         Row(
@@ -107,13 +109,11 @@ fun MenuListasPantalla(
                                 color = Color.Black,
                                 fontWeight = FontWeight.Medium
                             )
-                            IconButton(onClick = { onSeleccionarLista(lista) }) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.verlista),
-                                    contentDescription = "Ver lista",
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
+                            Image(
+                                painter = painterResource(id = R.drawable.verlista),
+                                contentDescription = "Ver lista",
+                                modifier = Modifier.size(20.dp)
+                            )
                         }
                     }
                 }
