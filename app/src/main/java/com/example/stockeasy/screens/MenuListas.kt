@@ -12,20 +12,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stockeasy.R
-
-data class Lista(val nombre: String)
+import com.example.stockeasy.data.ListaEntity
+import com.example.stockeasy.viewmodel.ListaViewModel
 
 @Composable
 fun MenuListasPantalla(
-    listas: List<Lista>,
-    onSeleccionarLista: (Lista) -> Unit,
+    onSeleccionarLista: (ListaEntity) -> Unit,
     onAgregarLista: () -> Unit,
     onVolverAlMenu: () -> Unit
 ) {
+    val viewModel: ListaViewModel = viewModel()
+    val listas by viewModel.listas.collectAsState()
     var busqueda by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
 
@@ -34,7 +36,6 @@ fun MenuListasPantalla(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Contenido principal desplazable
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -42,7 +43,6 @@ fun MenuListasPantalla(
                 .padding(top = 64.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Logo
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
@@ -64,7 +64,6 @@ fun MenuListasPantalla(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo de búsqueda
             OutlinedTextField(
                 value = busqueda,
                 onValueChange = { busqueda = it },
@@ -81,8 +80,7 @@ fun MenuListasPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Listas filtradas
-            val listasFiltradas = if (busqueda.isBlank()) listas else listas.filter {
+            val listasFiltradas = listas.filter {
                 it.nombre.contains(busqueda, ignoreCase = true)
             }
 
@@ -123,7 +121,6 @@ fun MenuListasPantalla(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Botón Agregar Lista
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
@@ -150,7 +147,6 @@ fun MenuListasPantalla(
             Spacer(modifier = Modifier.height(24.dp))
         }
 
-        // Botón Home funcional superpuesto
         Box(
             modifier = Modifier
                 .fillMaxSize()

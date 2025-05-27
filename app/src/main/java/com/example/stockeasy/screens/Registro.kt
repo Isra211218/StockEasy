@@ -24,7 +24,9 @@ import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stockeasy.R
+import com.example.stockeasy.viewmodel.UsuarioViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -34,6 +36,7 @@ fun RegistroPantalla(
 ) {
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
+    val viewModel: UsuarioViewModel = viewModel()
 
     var nombre by remember { mutableStateOf("") }
     var correo by remember { mutableStateOf("") }
@@ -170,14 +173,23 @@ fun RegistroPantalla(
 
         Button(
             onClick = {
-                // Validación
                 if (nombre.isBlank() || correo.isBlank() || contrasena.isBlank() || confirmarContrasena.isBlank()) {
                     errorMessage = "Todos los campos son obligatorios"
                 } else if (contrasena != confirmarContrasena) {
                     errorMessage = "Las contraseñas no coinciden"
                 } else {
-                    errorMessage = null
-                    onRegisterSuccess() // Ir al menú principal
+                    viewModel.registrarUsuario(
+                        nombre = nombre,
+                        correo = correo,
+                        contrasena = contrasena,
+                        onSuccess = {
+                            errorMessage = null
+                            onRegisterSuccess()
+                        },
+                        onError = { mensaje ->
+                            errorMessage = mensaje
+                        }
+                    )
                 }
             },
             modifier = Modifier

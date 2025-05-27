@@ -12,14 +12,15 @@ import androidx.navigation.compose.rememberNavController
 import com.example.stockeasy.Navigation.NavManager
 import com.example.stockeasy.ui.theme.StockEasyTheme
 
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             StockEasyTheme {
                 val navController = rememberNavController()
-
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -30,4 +31,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

@@ -52,8 +52,6 @@ fun NavManager(navController: NavHostController) {
 
         composable("editar_perfil") {
             EditarPerfilPantalla(
-                nombreUsuario = "",
-                correoUsuario = "",
                 onGuardarCambios = { navController.popBackStack() },
                 onVolverAlMenu = {
                     navController.navigate("menu_principal") {
@@ -65,14 +63,9 @@ fun NavManager(navController: NavHostController) {
 
         composable("menu_listas") {
             MenuListasPantalla(
-                listas = listOf(
-                    Lista("Inventario General"),
-                    Lista("Cocina"),
-                    Lista("Oficina")
-                ),
                 onSeleccionarLista = { lista ->
                     val nombreCodificado = Uri.encode(lista.nombre)
-                    navController.navigate("lista_seleccionada/$nombreCodificado")
+                    navController.navigate("lista_seleccionada/${lista.id}/$nombreCodificado")
                 },
                 onAgregarLista = {
                     navController.navigate("agregar_lista")
@@ -83,12 +76,29 @@ fun NavManager(navController: NavHostController) {
             )
         }
 
-        composable("lista_seleccionada/{nombreLista}") { backStackEntry ->
+        composable("agregar_lista") {
+            AgregarListaPantalla(
+                onVolver = {
+                    navController.popBackStack()
+                },
+                onIrAlInicio = {
+                    navController.navigate("menu_principal") {
+                        popUpTo("menu_principal") { inclusive = false }
+                    }
+                },
+                onGuardarLista = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable("lista_seleccionada/{listaId}/{nombreLista}") { backStackEntry ->
+            val listaId = backStackEntry.arguments?.getString("listaId")?.toIntOrNull() ?: 0
             val nombreLista = backStackEntry.arguments?.getString("nombreLista") ?: ""
             ListaSeleccionadaPantalla(
+                listaId = listaId,
                 nombreLista = nombreLista,
                 descripcionLista = "Descripción de $nombreLista",
-                productos = listOf(),
                 onVolver = { navController.popBackStack() },
                 onIrAlInicio = {
                     navController.navigate("menu_principal") {
@@ -96,21 +106,37 @@ fun NavManager(navController: NavHostController) {
                     }
                 },
                 onAgregarProducto = {
-                    navController.navigate("nuevo_producto")
+                    navController.navigate("nuevo_producto/$listaId")
                 },
-                onEditarProducto = {
-                    navController.navigate("editar_producto")
+                onEditarProducto = { productoId ->
+                    navController.navigate("editar_producto/$productoId/$listaId")
                 }
             )
         }
 
-        composable("editar_producto") {
+        composable("nuevo_producto/{listaId}") { backStackEntry ->
+            val listaId = backStackEntry.arguments?.getString("listaId")?.toIntOrNull() ?: 0
+            NuevoProductoPantalla(
+                listaId = listaId,
+                onGuardarProducto = { _, _ -> navController.popBackStack() },
+                onVolver = { navController.popBackStack() },
+                onIrAlInicio = {
+                    navController.navigate("menu_principal") {
+                        popUpTo("menu_principal") { inclusive = false }
+                    }
+                }
+            )
+        }
+
+        composable("editar_producto/{productoId}/{listaId}") { backStackEntry ->
+            val productoId = backStackEntry.arguments?.getString("productoId")?.toIntOrNull() ?: 0
+            val listaId = backStackEntry.arguments?.getString("listaId")?.toIntOrNull() ?: 0
             EditarProductoPantalla(
+                productoId = productoId,
                 productoInicial = "",
                 cantidadInicial = "",
-                onGuardarCambios = { _, _ ->
-                    navController.popBackStack()
-                },
+                listaId = listaId,
+                onGuardarCambios = { _, _ -> navController.popBackStack() },
                 onVolver = { navController.popBackStack() },
                 onIrAlInicio = {
                     navController.navigate("menu_principal") {
@@ -119,62 +145,50 @@ fun NavManager(navController: NavHostController) {
                 }
             )
         }
-
-        composable("nuevo_producto") {
-            NuevoProductoPantalla(
-                onGuardarProducto = { _, _ ->
-                    navController.popBackStack()
-                },
-                onVolver = { navController.popBackStack() },
-                onIrAlInicio = {
-                    navController.navigate("menu_principal") {
-                        popUpTo("menu_principal") { inclusive = false }
-                    }
-                }
-            )
-        }
-
-        composable("agregar_venta") {
-            AgregarVentaPantalla(
-                onGuardarVenta = { _, _, _, _ ->
-                    navController.popBackStack()
-                },
-                onVolverAHistorial = {
-                    navController.popBackStack()
-                },
-                onVolverAlMenu = {
-                    navController.navigate("menu_principal") {
-                        popUpTo("menu_principal") { inclusive = false }
-                    }
-                }
-            )
-        }
-
-        composable("agregar_lista") {
-            AgregarListaPantalla(
-                onGuardarLista = { _, _ -> navController.popBackStack() },
-                onVolver = {
-                    navController.navigate("menu_listas") {
-                        popUpTo("agregar_lista") { inclusive = true }
-                    }
-                },
-                onIrAlInicio = {
-                    navController.navigate("menu_principal") {
-                        popUpTo("menu_principal") { inclusive = false }
-                    }
-                }
-            )
-        }
-
 
         composable("historial_ventas") {
             HistorialVentasPantalla(
-                ventas = listOf(),
                 onAgregarVenta = {
-                    navController.navigate("agregar_venta")
+                    navController.navigate("agregar_venta/0")
                 },
                 onVolverAlMenu = {
                     navController.popBackStack()
+                },
+                listaId = 0
+            )
+        }
+
+        composable("historial_ventas/{listaId}") { backStackEntry ->
+            val listaId = backStackEntry.arguments?.getString("listaId")?.toIntOrNull() ?: 0
+            HistorialVentasPantalla(
+                onAgregarVenta = {
+                    navController.navigate("agregar_venta/$listaId")
+                },
+                onVolverAlMenu = {
+                    navController.popBackStack()
+                },
+                listaId = listaId
+            )
+        }
+
+        composable("agregar_venta/{listaId}") { backStackEntry ->
+            val listaId = backStackEntry.arguments?.getString("listaId")?.toIntOrNull() ?: 0
+            AgregarVentaPantalla(
+                listaId = listaId,
+                onGuardarVenta = { _, _, _, _, _ ->
+                    navController.navigate("historial_ventas/$listaId") {
+                        popUpTo("historial_ventas/$listaId") { inclusive = true }
+                    }
+                },
+                onVolverAHistorial = {
+                    navController.navigate("historial_ventas/$listaId") {
+                        popUpTo("historial_ventas/$listaId") { inclusive = true }
+                    }
+                },
+                onVolverAlMenu = {
+                    navController.navigate("menu_principal") {
+                        popUpTo("menu_principal") { inclusive = false }
+                    }
                 }
             )
         }

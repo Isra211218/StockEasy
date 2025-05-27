@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,23 +15,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stockeasy.R
+import com.example.stockeasy.viewmodel.VentaViewModel
 
-/* ---------- DATOS ---------- */
-data class Venta(
-    val fecha: String,
-    val producto: String,
-    val lista: String,
-    val cantidad: String
-)
-
-/* ---------- PANTALLA ---------- */
 @Composable
 fun HistorialVentasPantalla(
-    ventas: List<Venta>,
-    onAgregarVenta: () -> Unit,
-    onVolverAlMenu: () -> Unit
+    listaId: Int,
+    onAgregarVenta: (Int) -> Unit,
+    onVolverAlMenu: () -> Unit,
 ) {
+    val viewModel: VentaViewModel = viewModel()
+    val ventas by viewModel.ventas.collectAsState()
+
+    LaunchedEffect(true) {
+        viewModel.cargarVentas()
+    }
+
     val scrollState = rememberScrollState()
 
     Box(
@@ -39,7 +39,6 @@ fun HistorialVentasPantalla(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Contenido principal desplazable
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -49,7 +48,6 @@ fun HistorialVentasPantalla(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Logo
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
@@ -72,7 +70,6 @@ fun HistorialVentasPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Lista de ventas
             if (ventas.isEmpty()) {
                 Text(
                     text = "No hay ventas registradas.",
@@ -113,9 +110,8 @@ fun HistorialVentasPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Botón Agregar Venta
             Button(
-                onClick = onAgregarVenta,
+                onClick = {onAgregarVenta(listaId)},
                 modifier = Modifier
                     .width(280.dp)
                     .height(48.dp),
@@ -135,7 +131,6 @@ fun HistorialVentasPantalla(
             Spacer(modifier = Modifier.height(24.dp))
         }
 
-        // Botón Home funcional (arriba a la derecha)
         IconButton(
             onClick = onVolverAlMenu,
             modifier = Modifier

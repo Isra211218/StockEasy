@@ -1,5 +1,6 @@
 package com.example.stockeasy.screens
 
+import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -11,20 +12,29 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stockeasy.R
+import com.example.stockeasy.viewmodel.ListaViewModel
 
 @Composable
 fun AgregarListaPantalla(
-    onGuardarLista: (String, String) -> Unit,
     onVolver: () -> Unit,
     onIrAlInicio: () -> Unit,
+    onGuardarLista: () -> Boolean
 ) {
+    val context = LocalContext.current
+    val viewModel: ListaViewModel = viewModel(
+        factory = ViewModelProvider.AndroidViewModelFactory.getInstance(context.applicationContext as Application)
+    )
+
     var nombreLista by remember { mutableStateOf("") }
     var descripcionLista by remember { mutableStateOf("") }
 
@@ -38,7 +48,6 @@ fun AgregarListaPantalla(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Contenido principal desplazable
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -46,7 +55,6 @@ fun AgregarListaPantalla(
                 .padding(top = 64.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Logo
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
@@ -120,8 +128,10 @@ fun AgregarListaPantalla(
                     mostrarErrorNombre = !nombreValido
                     mostrarErrorDescripcion = !descripcionValida
 
-                    if (nombreValido && descripcionValida) {
-                        onGuardarLista(nombreLista, descripcionLista)
+                    if (nombreValido && descripcionValida && onGuardarLista()) {
+                        viewModel.agregarLista(nombreLista, descripcionLista) {
+                            onVolver()
+                        }
                     }
                 },
                 modifier = Modifier
@@ -135,7 +145,6 @@ fun AgregarListaPantalla(
             Spacer(modifier = Modifier.height(40.dp))
         }
 
-        // Botón de volver
         IconButton(
             onClick = onVolver,
             modifier = Modifier
@@ -149,7 +158,6 @@ fun AgregarListaPantalla(
             )
         }
 
-        // Botón de inicio (Home)
         IconButton(
             onClick = onIrAlInicio,
             modifier = Modifier

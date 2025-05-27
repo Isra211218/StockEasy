@@ -1,5 +1,7 @@
 package com.example.stockeasy.screens
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -10,26 +12,50 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stockeasy.R
+import com.example.stockeasy.viewmodel.ProductoViewModel
+import android.util.Base64
+
 
 @Composable
 fun EditarProductoPantalla(
+    productoId: Int,
     productoInicial: String = "",
     cantidadInicial: String = "",
+    listaId: Int = 0,
     onGuardarCambios: (String, String) -> Unit,
     onVolver: () -> Unit,
     onIrAlInicio: () -> Unit
 ) {
+    val viewModel: ProductoViewModel = viewModel()
+    val context = LocalContext.current
+
     var nombre by remember { mutableStateOf(productoInicial) }
     var cantidad by remember { mutableStateOf(cantidadInicial) }
+    var imagenBase64 by remember { mutableStateOf("") }
     var imagenCambiada by remember { mutableStateOf(false) }
 
-    // Detecta si hay cambios para habilitar botón guardar
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            uri?.let {
+                val inputStream = context.contentResolver.openInputStream(it)
+                val bytes = inputStream?.readBytes()
+                if (bytes != null) {
+                    imagenBase64 = Base64.encodeToString(bytes, Base64.DEFAULT)
+                    imagenCambiada = true
+                }
+            }
+        }
+    )
+
     val cambiosHechos = (nombre.isNotBlank() && nombre != productoInicial) ||
             (cantidad.isNotBlank() && cantidad != cantidadInicial) ||
             imagenCambiada
@@ -69,23 +95,6 @@ fun EditarProductoPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text(
-                text = "Nombre actual: $productoInicial",
-                color = Color.Black,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Text(
-                text = "Existencia actual: $cantidadInicial",
-                color = Color.Black,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
             OutlinedTextField(
                 value = nombre,
                 onValueChange = { nombre = it },
@@ -120,10 +129,9 @@ fun EditarProductoPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Botón para cambiar imagen (placeholder)
             Button(
                 onClick = {
-                    imagenCambiada = true // Aquí la lógica real para cambiar imagen
+                    launcher.launch("image/*")
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -143,10 +151,18 @@ fun EditarProductoPantalla(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Botón Guardar cambios, habilitado sólo si hay cambios
             Button(
                 onClick = {
-                    onGuardarCambios(nombre, cantidad)
+                    val nombreSanitizado = nombre.trim().lowercase()
+                    viewModel.actualizarProducto(
+                        id = productoId,
+                        nombre = nombreSanitizado,
+                        cantidad = cantidad.toIntOrNull() ?: 0,
+                        imagenBase64 = imagenBase64,
+                        listaId = listaId
+                    ) {
+                        onGuardarCambios(nombreSanitizado, cantidad)
+                    }
                 },
                 enabled = cambiosHechos,
                 modifier = Modifier
@@ -160,7 +176,6 @@ fun EditarProductoPantalla(
             Spacer(modifier = Modifier.height(24.dp))
         }
 
-        // Botón Volver (esquina superior izquierda)
         IconButton(
             onClick = onVolver,
             modifier = Modifier
@@ -174,7 +189,6 @@ fun EditarProductoPantalla(
             )
         }
 
-        // Botón Inicio (esquina superior derecha)
         IconButton(
             onClick = onIrAlInicio,
             modifier = Modifier

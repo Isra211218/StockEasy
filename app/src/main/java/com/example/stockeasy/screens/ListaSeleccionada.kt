@@ -1,6 +1,7 @@
 package com.example.stockeasy.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -15,25 +16,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stockeasy.R
+import com.example.stockeasy.viewmodel.ProductoViewModel
+import android.graphics.BitmapFactory
+import android.util.Base64
+import androidx.compose.ui.graphics.asImageBitmap
 
-// Datos de cada producto dentro de una lista
-data class ProductoEnLista(
-    val nombre: String,
-    val cantidad: Int,
-    val imagenResId: Int
-)
 
 @Composable
 fun ListaSeleccionadaPantalla(
     nombreLista: String,
     descripcionLista: String,
-    productos: List<ProductoEnLista>,
+    listaId: Int,
     onVolver: () -> Unit,
     onIrAlInicio: () -> Unit,
     onAgregarProducto: () -> Unit,
-    onEditarProducto: () -> Unit
+    onEditarProducto: (Int) -> Unit,
 ) {
+    val viewModel: ProductoViewModel = viewModel()
+    val productos by viewModel.productos.collectAsState()
+
+    LaunchedEffect(listaId) {
+        viewModel.cargarProductos(listaId)
+    }
+
     val scrollState = rememberScrollState()
 
     Box(
@@ -50,7 +57,6 @@ fun ListaSeleccionadaPantalla(
         ) {
             Spacer(modifier = Modifier.height(80.dp))
 
-            // Logo
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
@@ -61,7 +67,6 @@ fun ListaSeleccionadaPantalla(
                 contentScale = ContentScale.Fit
             )
 
-            // Título
             Text(
                 text = nombreLista,
                 fontSize = 22.sp,
@@ -72,7 +77,6 @@ fun ListaSeleccionadaPantalla(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Descripción
             Text(
                 text = descripcionLista,
                 fontSize = 16.sp,
@@ -82,7 +86,6 @@ fun ListaSeleccionadaPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Lista de productos
             if (productos.isEmpty()) {
                 Text(
                     text = "No hay productos en esta lista.",
@@ -95,32 +98,40 @@ fun ListaSeleccionadaPantalla(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp),
+                            .padding(vertical = 8.dp)
+                            .clickable { onEditarProducto(producto.id) },
                         colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))
                     ) {
                         Row(
                             modifier = Modifier
                                 .padding(12.dp)
                                 .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Image(
-                                painter = painterResource(id = producto.imagenResId),
-                                contentDescription = producto.nombre,
-                                modifier = Modifier
-                                    .size(50.dp)
-                                    .padding(end = 12.dp)
-                            )
-                            Column {
-                                Text(
-                                    text = "Producto: ${producto.nombre}",
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Black
-                                )
-                                Text(
-                                    text = "Existencias: ${producto.cantidad}",
-                                    color = Color.Black
-                                )
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                val imageBitmap = remember(producto.imagenBase64) {
+                                    val bytes = Base64.decode(producto.imagenBase64, Base64.DEFAULT)
+                                    BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
+                                }
+                                imageBitmap?.let {
+                                    Image(
+                                        bitmap = it,
+                                        contentDescription = producto.nombre,
+                                        modifier = Modifier.size(50.dp)
+                                    )
+                                }
+                                Column {
+                                    Text(
+                                        text = "Producto: ${producto.nombre}",
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Black
+                                    )
+                                    Text(
+                                        text = "Existencias: ${producto.cantidad}",
+                                        color = Color.Black
+                                    )
+                                }
                             }
                         }
                     }
@@ -129,19 +140,10 @@ fun ListaSeleccionadaPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Botones de acción con mejor distribución
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Button(
-                    onClick = onEditarProducto,
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1976D2))
-                ) {
-                    Text("Editar Producto", color = Color.White)
-                }
-
                 Button(
                     onClick = onAgregarProducto,
                     modifier = Modifier.weight(1f),
@@ -154,7 +156,6 @@ fun ListaSeleccionadaPantalla(
             Spacer(modifier = Modifier.height(24.dp))
         }
 
-        // Botón de volver (izquierda arriba)
         IconButton(
             onClick = onVolver,
             modifier = Modifier
@@ -168,7 +169,6 @@ fun ListaSeleccionadaPantalla(
             )
         }
 
-        // Botón de home (derecha arriba)
         IconButton(
             onClick = onIrAlInicio,
             modifier = Modifier

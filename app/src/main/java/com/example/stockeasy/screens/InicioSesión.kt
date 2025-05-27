@@ -22,10 +22,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stockeasy.R
+import com.example.stockeasy.viewmodel.UsuarioViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -35,11 +36,12 @@ fun InicioSesionPantalla(
 ) {
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
+    val viewModel: UsuarioViewModel = viewModel()
 
     var correo by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
     var mostrarContrasena by remember { mutableStateOf(false) }
-    var mostrarError by remember { mutableStateOf(false) }
+    var mensajeError by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -83,12 +85,11 @@ fun InicioSesionPantalla(
             modifier = Modifier.padding(vertical = 8.dp)
         )
 
-        /* ---------- Correo ---------- */
         OutlinedTextField(
             value = correo,
             onValueChange = {
                 correo = it
-                if (mostrarError) mostrarError = false
+                mensajeError = null
             },
             label = { Text("Correo electrónico") },
             singleLine = true,
@@ -100,17 +101,15 @@ fun InicioSesionPantalla(
             modifier = Modifier.fillMaxWidth()
         )
 
-        /* ---------- Contraseña ---------- */
         OutlinedTextField(
             value = contrasena,
             onValueChange = {
                 contrasena = it
-                if (mostrarError) mostrarError = false
+                mensajeError = null
             },
             label = { Text("Contraseña") },
             singleLine = true,
-            visualTransformation =
-                if (mostrarContrasena) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (mostrarContrasena) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
@@ -121,19 +120,17 @@ fun InicioSesionPantalla(
                     Icon(
                         imageVector = if (mostrarContrasena)
                             Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                        contentDescription =
-                            if (mostrarContrasena) "Ocultar contraseña" else "Mostrar contraseña"
+                        contentDescription = if (mostrarContrasena) "Ocultar contraseña" else "Mostrar contraseña"
                     )
                 }
             },
             modifier = Modifier.fillMaxWidth()
         )
 
-        /* ---------- Mensaje de error ---------- */
-        if (mostrarError) {
+        mensajeError?.let {
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Ingresa un correo y contraseña",
+                text = it,
                 color = Color.Red,
                 fontSize = 14.sp,
                 modifier = Modifier
@@ -145,14 +142,22 @@ fun InicioSesionPantalla(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        /* ---------- Botón Iniciar sesión ---------- */
         Button(
             onClick = {
                 if (correo.isBlank() || contrasena.isBlank()) {
-                    mostrarError = true
+                    mensajeError = "Ingresa un correo y contraseña"
                 } else {
-                    mostrarError = false
-                    onLoginSuccess()
+                    viewModel.iniciarSesion(
+                        correo = correo,
+                        contrasena = contrasena,
+                        onSuccess = {
+                            mensajeError = null
+                            onLoginSuccess()
+                        },
+                        onError = { mensaje ->
+                            mensajeError = mensaje
+                        }
+                    )
                 }
             },
             modifier = Modifier
@@ -165,7 +170,6 @@ fun InicioSesionPantalla(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        /* ---------- Link a registro ---------- */
         Text(
             text = "¿No tienes cuenta? REGÍSTRATE",
             color = Color(0xFF2E7D6D),
@@ -173,12 +177,3 @@ fun InicioSesionPantalla(
         )
     }
 }
-
-/* --- Preview opcional ---
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun InicioSesionPantallaPreview() {
-    InicioSesionPantalla(onLoginSuccess = {}, onNavigateToRegister = {})
-}
-*/
-

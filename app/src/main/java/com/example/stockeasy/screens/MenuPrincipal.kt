@@ -13,7 +13,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.stockeasy.R
@@ -36,7 +35,6 @@ fun MenuPrincipalPantalla(
     ) {
         Spacer(modifier = Modifier.height(80.dp))
 
-        /* ---------- Logo ---------- */
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = "Logo de la app",
@@ -49,7 +47,6 @@ fun MenuPrincipalPantalla(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        /* ---------- Leyenda ---------- */
         Text(
             text = "Diseñada para facilitar tu vida al tener control de tus espacios personales.",
             fontSize = 16.sp,
@@ -61,7 +58,6 @@ fun MenuPrincipalPantalla(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        /* ---------- Botón Listas ---------- */
         MenuOption(
             iconResId = R.drawable.lista,
             text = "Listas",
@@ -70,27 +66,22 @@ fun MenuPrincipalPantalla(
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        /* ---------- Botón Historial de ventas ---------- */
         MenuOption(
             iconResId = R.drawable.historial,
             text = "Historial de Ventas",
             onClick = onNavigateToHistorialVentas
         )
 
-        Spacer(modifier = Modifier.weight(1f))  // Empuja lo siguiente al final
+        Spacer(modifier = Modifier.height(15.dp))
 
-        /* ---------- Botón Editar perfil ---------- */
-        SmallButton(
+        MenuOption(
             iconResId = R.drawable.usuario,
-            text = "Editar perfil",
-            color = Color.Gray,
-            onClick = onNavigateToEditarPerfil,
-            alignStart = true
+            text = "Editar Perfil",
+            onClick = onNavigateToEditarPerfil
         )
 
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.weight(1f))
 
-        /* ---------- Botón Cerrar sesión ---------- */
         SmallButton(
             iconResId = R.drawable.exit,
             text = "Cerrar sesión",
@@ -164,17 +155,3 @@ fun SmallButton(
         }
     }
 }
-
-/* --- Preview opcional ---
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun MenuPrincipalPreview() {
-    MenuPrincipalPantalla(
-        onNavigateToListas = {},
-        onNavigateToHistorialVentas = {},
-        onNavigateToEditarPerfil = {},
-        onLogout = {}
-    )
-}
-*/
-

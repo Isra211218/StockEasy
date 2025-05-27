@@ -12,17 +12,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stockeasy.R
+import com.example.stockeasy.viewmodel.VentaViewModel
 
 @Composable
 fun AgregarVentaPantalla(
-    onGuardarVenta: (producto: String, cantidad: String, fecha: String, lista: String) -> Unit,
+    listaId: Int,
+    onGuardarVenta: (String, String, String, String, Int) -> Unit,
     onVolverAHistorial: () -> Unit,
     onVolverAlMenu: () -> Unit
 ) {
+    val viewModel: VentaViewModel = viewModel()
+
     var producto by remember { mutableStateOf("") }
     var cantidad by remember { mutableStateOf("") }
     var fecha by remember { mutableStateOf("") }
@@ -38,78 +42,69 @@ fun AgregarVentaPantalla(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .verticalScroll(scrollState),
+                .verticalScroll(scrollState)
+                .padding(top = 64.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(80.dp))
-
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp)
-                    .padding(vertical = 16.dp),
+                    .height(140.dp),
                 contentScale = ContentScale.Fit
             )
 
-            Text(
-                text = "Agregar Venta",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                color = Color(0xFF2E7D6D)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text("Agregar Venta", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D6D))
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            OutlinedTextField(
+                value = producto,
+                onValueChange = { producto = it },
+                label = { Text("Producto") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = cantidad,
+                onValueChange = { cantidad = it },
+                label = { Text("Cantidad") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = fecha,
+                onValueChange = { fecha = it },
+                label = { Text("Fecha") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = lista,
+                onValueChange = { lista = it },
+                label = { Text("Lista") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Campo: Producto
-            CampoConIcono(
-                valor = producto,
-                onValorChange = { producto = it },
-                label = "Producto",
-                iconRes = R.drawable.producto
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Campo: Cantidad
-            CampoConIcono(
-                valor = cantidad,
-                onValorChange = { cantidad = it },
-                label = "Cantidad",
-                iconRes = R.drawable.cantidad
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Campo: Fecha
-            CampoConIcono(
-                valor = fecha,
-                onValorChange = { fecha = it },
-                label = "Fecha",
-                iconRes = R.drawable.fecha
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Campo: Lista
-            CampoConIcono(
-                valor = lista,
-                onValorChange = { lista = it },
-                label = "Lista",
-                iconRes = R.drawable.lista
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
             Button(
                 onClick = {
-                    if (producto.isNotBlank() && cantidad.isNotBlank() &&
-                        fecha.isNotBlank() && lista.isNotBlank()
-                    ) {
-                        onGuardarVenta(producto, cantidad, fecha, lista)
+                    viewModel.agregarVenta(producto, cantidad, fecha, lista, listaId) {
+                        onGuardarVenta(producto, cantidad, fecha, lista, listaId)
                     }
                 },
                 modifier = Modifier
@@ -120,15 +115,15 @@ fun AgregarVentaPantalla(
                 Text("Guardar Venta", color = Color.White)
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
         }
 
-        // Botón regresar (izquierda arriba)
+        // Botones superiores
         IconButton(
             onClick = onVolverAHistorial,
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .padding(12.dp)
+                .padding(8.dp)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.regreso),
@@ -137,41 +132,17 @@ fun AgregarVentaPantalla(
             )
         }
 
-        // Botón home (derecha arriba)
         IconButton(
             onClick = onVolverAlMenu,
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(12.dp)
+                .padding(8.dp)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.home),
-                contentDescription = "Menú principal",
+                contentDescription = "Inicio",
                 modifier = Modifier.size(28.dp)
             )
         }
     }
-}
-
-@Composable
-fun CampoConIcono(
-    valor: String,
-    onValorChange: (String) -> Unit,
-    label: String,
-    iconRes: Int
-) {
-    OutlinedTextField(
-        value = valor,
-        onValueChange = onValorChange,
-        label = { Text(label) },
-        singleLine = true,
-        leadingIcon = {
-            Image(
-                painter = painterResource(id = iconRes),
-                contentDescription = label,
-                modifier = Modifier.size(24.dp)
-            )
-        },
-        modifier = Modifier.fillMaxWidth()
-    )
 }

@@ -22,15 +22,18 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stockeasy.R
+import com.example.stockeasy.viewmodel.UsuarioViewModel
 
 @Composable
 fun EditarPerfilPantalla(
-    nombreUsuario: String,
-    correoUsuario: String,
     onGuardarCambios: () -> Unit,
     onVolverAlMenu: () -> Unit
 ) {
+    val viewModel: UsuarioViewModel = viewModel()
+    val usuario by viewModel.usuario.collectAsState()
+
     var nuevaContrasena by remember { mutableStateOf("") }
     var confirmarContrasena by remember { mutableStateOf("") }
     var mensajeError by remember { mutableStateOf("") }
@@ -45,7 +48,6 @@ fun EditarPerfilPantalla(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Contenido scrollable principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -77,7 +79,7 @@ fun EditarPerfilPantalla(
             Spacer(modifier = Modifier.height(24.dp))
 
             OutlinedTextField(
-                value = nombreUsuario,
+                value = usuario?.nombre ?: "",
                 onValueChange = {},
                 label = { Text("Nombre") },
                 singleLine = true,
@@ -88,7 +90,7 @@ fun EditarPerfilPantalla(
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
-                value = correoUsuario,
+                value = usuario?.correo ?: "",
                 onValueChange = {},
                 label = { Text("Correo electrónico") },
                 singleLine = true,
@@ -147,6 +149,7 @@ fun EditarPerfilPantalla(
                 onClick = {
                     if (nuevaContrasena == confirmarContrasena && nuevaContrasena.isNotBlank()) {
                         mensajeError = ""
+                        viewModel.actualizarContrasena(nuevaContrasena)
                         onGuardarCambios()
                     } else {
                         mensajeError = "La contraseña no coincide"
@@ -163,24 +166,17 @@ fun EditarPerfilPantalla(
             Spacer(modifier = Modifier.height(24.dp))
         }
 
-        // Botón Home funcional superpuesto, fuera del scroll
-        Box(
+        IconButton(
+            onClick = onVolverAlMenu,
             modifier = Modifier
-                .fillMaxSize()
-                .padding(4.dp)
+                .align(Alignment.TopEnd)
+                .padding(top = 8.dp, end = 4.dp)
         ) {
-            IconButton(
-                onClick = onVolverAlMenu,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 8.dp, end = 4.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.home),
-                    contentDescription = "Volver al menú",
-                    modifier = Modifier.size(28.dp)
-                )
-            }
+            Image(
+                painter = painterResource(id = R.drawable.home),
+                contentDescription = "Volver al menú",
+                modifier = Modifier.size(28.dp)
+            )
         }
     }
 }
