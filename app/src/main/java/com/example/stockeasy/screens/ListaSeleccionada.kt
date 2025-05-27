@@ -58,7 +58,7 @@ fun ListaSeleccionadaPantalla(
             Spacer(modifier = Modifier.height(80.dp))
 
             Image(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(id = R.drawable.lista),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()

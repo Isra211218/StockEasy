@@ -27,36 +27,38 @@ class VentaViewModel(application: Application) : AndroidViewModel(application) {
         producto: String,
         cantidad: String,
         fecha: String,
-        lista: String,
+        nombreLista: String,
         listaId: Int,
         onFinish: () -> Unit
     ) {
         viewModelScope.launch {
-            val nombreSanitizado = producto.trim().lowercase()
+            val nombreProducto = producto.trim().lowercase()
+            val nombreListaSanitizado = nombreLista.trim().lowercase()
             val cantidadVendida = cantidad.toIntOrNull() ?: return@launch
 
-            // Verificar cantidad válida
             if (cantidadVendida <= 0) return@launch
 
-            // Buscar el producto correspondiente en la lista
-            val productoExistente = productoDao.buscarPorNombreEnLista(nombreSanitizado, listaId)
+            // Buscar lista por nombre
+            val listaConNombre = db.listaDao().buscarPorNombre(nombreListaSanitizado)
 
-            if (productoExistente != null) {
-                // Validar si hay suficiente stock
-                val stockActual = productoExistente.cantidad
-                val nuevoStock = (stockActual - cantidadVendida).coerceAtLeast(0)
+            if (listaConNombre != null) {
+                val productoExistente = productoDao.buscarPorNombreEnLista(nombreProducto, listaConNombre.id)
 
-                val productoActualizado = productoExistente.copy(cantidad = nuevoStock)
-                productoDao.actualizarProducto(productoActualizado)
+                if (productoExistente != null) {
+                    val stockActual = productoExistente.cantidad
+                    val nuevoStock = (stockActual - cantidadVendida).coerceAtLeast(0)
+                    val productoActualizado = productoExistente.copy(cantidad = nuevoStock)
+                    productoDao.actualizarProducto(productoActualizado)
+                }
             }
 
-            // Registrar la venta en la tabla de ventas
+            // Registrar la venta con el nombre de la lista
             ventaDao.insertar(
                 VentaEntity(
-                    producto = nombreSanitizado,
+                    producto = nombreProducto,
                     cantidad = cantidad,
                     fecha = fecha,
-                    lista = lista
+                    lista = nombreListaSanitizado
                 )
             )
 
@@ -64,4 +66,5 @@ class VentaViewModel(application: Application) : AndroidViewModel(application) {
             onFinish()
         }
     }
+
 }

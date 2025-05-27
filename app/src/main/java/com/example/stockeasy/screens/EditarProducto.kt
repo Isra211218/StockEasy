@@ -77,7 +77,7 @@ fun EditarProductoPantalla(
             Spacer(modifier = Modifier.height(80.dp))
 
             Image(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(id = R.drawable.producto),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()

@@ -49,7 +49,7 @@ fun HistorialVentasPantalla(
             Spacer(modifier = Modifier.height(16.dp))
 
             Image(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(id = R.drawable.ventas),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()

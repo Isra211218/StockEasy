@@ -87,7 +87,10 @@ fun NavManager(navController: NavHostController) {
                     }
                 },
                 onGuardarLista = {
-                    navController.popBackStack()
+                    navController.navigate("menu_listas") {
+                        popUpTo("menu_listas") { inclusive = true }
+                    }
+                    true
                 }
             )
         }
