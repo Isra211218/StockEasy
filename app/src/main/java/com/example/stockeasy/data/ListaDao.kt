@@ -17,4 +17,7 @@ interface ListaDao {
     @Query("SELECT nombre FROM listas")
     suspend fun obtenerNombresListas(): List<String>
 
+    @Query("DELETE FROM listas WHERE id = :listaId")
+    suspend fun eliminarListaPorId(listaId: Int)
+
 }

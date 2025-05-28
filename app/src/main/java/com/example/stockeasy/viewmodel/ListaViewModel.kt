@@ -32,4 +32,13 @@ class ListaViewModel(application: Application) : AndroidViewModel(application) {
             onFinish()
         }
     }
+
+    fun eliminarLista(listaId: Int, onFinish: () -> Unit) {
+        viewModelScope.launch {
+            listaDao.eliminarListaPorId(listaId)
+            cargarListas()
+            onFinish()
+        }
+    }
+
 }
