@@ -1,5 +1,6 @@
 package com.example.stockeasy.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -22,16 +24,21 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.activity.ComponentActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stockeasy.R
+import com.example.stockeasy.viewmodel.ColorViewModel
 import com.example.stockeasy.viewmodel.UsuarioViewModel
 
+@SuppressLint("ContextCastToActivity")
 @Composable
 fun EditarPerfilPantalla(
     onGuardarCambios: () -> Unit,
     onVolverAlMenu: () -> Unit
 ) {
     val viewModel: UsuarioViewModel = viewModel()
+    val activity = LocalContext.current as ComponentActivity
+    val colorViewModel: ColorViewModel = viewModel(activity)
     val usuario by viewModel.usuario.collectAsState()
 
     var nuevaContrasena by remember { mutableStateOf("") }
@@ -42,6 +49,10 @@ fun EditarPerfilPantalla(
     var confirmarContrasenaVisible by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
+
+    var expanded by remember { mutableStateOf(false) }
+    val opcionesColor = listOf("Blanco", "Gris claro", "Azul celeste")
+
 
     Box(
         modifier = Modifier
@@ -58,7 +69,7 @@ fun EditarPerfilPantalla(
             Spacer(modifier = Modifier.height(16.dp))
 
             Image(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(id = R.drawable.profile_user),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -141,6 +152,37 @@ fun EditarPerfilPantalla(
                     fontSize = 14.sp,
                     modifier = Modifier.padding(top = 4.dp)
                 )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Selector de color de fondo
+            Text("Color de fondo:", fontWeight = FontWeight.SemiBold)
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Box {
+                Button(onClick = { expanded = true }) {
+                    Text("Seleccionar color")
+                }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    opcionesColor.forEach { color ->
+                        DropdownMenuItem(
+                            text = { Text(color) },
+                            onClick = {
+                                colorViewModel.backgroundColor.value = when (color) {
+                                    "Gris claro" -> Color(0xFFCFCFCF)
+                                    "Azul celeste" -> Color(0xFFCAE7FF)
+                                    else -> Color.White
+                                }
+                                expanded = false
+                            }
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(32.dp))
