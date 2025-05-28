@@ -154,9 +154,6 @@ fun EditarProductoPantalla(
 
             Button(
                 onClick = {
-                    val nombreFinal = if (nombre.trim().isNotEmpty()) nombre.trim() else productoInicial
-                    val cantidadFinal = if (cantidad.trim().isNotEmpty()) cantidad.trim() else cantidadInicial
-                    val imagenFinal = if (imagenCambiada) imagenBase64 else imagenInicial
 
                     viewModel.actualizarProducto(
                         id = productoId,
