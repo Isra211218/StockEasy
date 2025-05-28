@@ -39,6 +39,9 @@ fun AgregarVentaPantalla(
     var fecha by remember { mutableStateOf("") }
     var lista by remember { mutableStateOf("") }
 
+    // Lista temporal para productos a vender en esta sesión
+    var productosAgregados by remember { mutableStateOf(mutableListOf<Triple<String, String, String>>()) }
+
     val scrollState = rememberScrollState()
 
     Box(
@@ -53,6 +56,7 @@ fun AgregarVentaPantalla(
                 .padding(top = 64.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Imagen y título, dropdowns, inputs (sin cambios) ...
             Image(
                 painter = painterResource(id = R.drawable.ventas),
                 contentDescription = "Logo",
@@ -68,7 +72,7 @@ fun AgregarVentaPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Primero: Lista
+            // Dropdown para listas
             var expandedLista by remember { mutableStateOf(false) }
 
             ExposedDropdownMenuBox(
@@ -85,7 +89,6 @@ fun AgregarVentaPantalla(
                         .menuAnchor()
                         .fillMaxWidth()
                 )
-
                 ExposedDropdownMenu(
                     expanded = expandedLista,
                     onDismissRequest = { expandedLista = false }
@@ -98,7 +101,7 @@ fun AgregarVentaPantalla(
                                 expandedLista = false
                                 viewModel.cargarProductosDeLista(nombreLista) { id ->
                                     listaIdSeleccionado = id
-                                    producto = "" // Limpiar producto después de cargar los nuevos productos
+                                    producto = ""
                                 }
                             }
                         )
@@ -108,7 +111,7 @@ fun AgregarVentaPantalla(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Segundo: Producto
+            // Dropdown para productos
             var expandedProducto by remember { mutableStateOf(false) }
 
             ExposedDropdownMenuBox(
@@ -125,7 +128,6 @@ fun AgregarVentaPantalla(
                         .menuAnchor()
                         .fillMaxWidth()
                 )
-
                 ExposedDropdownMenu(
                     expanded = expandedProducto,
                     onDismissRequest = { expandedProducto = false }
@@ -164,11 +166,58 @@ fun AgregarVentaPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Mostrar productos agregados
+            if (productosAgregados.isNotEmpty()) {
+                Text("Productos agregados:", fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth())
+                productosAgregados.forEachIndexed { index, (prod, cant, fec) ->
+                    Text("- $prod, Cant: $cant, Fecha: $fec", modifier = Modifier.fillMaxWidth())
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            // Botón para agregar otro producto
             Button(
                 onClick = {
-                    viewModel.agregarVenta(producto, cantidad, fecha, lista, listaIdSeleccionado) {
-                        onGuardarVenta(producto, cantidad, fecha, lista, listaIdSeleccionado)
+                    if (producto.isNotBlank() && cantidad.isNotBlank() && fecha.isNotBlank()) {
+                        productosAgregados.add(Triple(producto, cantidad, fecha))
+                        productosAgregados = productosAgregados.toMutableList() // disparar recomposición
+                        producto = ""
+                        cantidad = ""
+                        fecha = ""
                     }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .padding(bottom = 8.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D6D))
+            ) {
+                Text("Agregar", color = Color.White)
+            }
+
+            // Botón para guardar todas las ventas
+            Button(
+                onClick = {
+                    // Agregar el producto actual si hay datos
+                    if (producto.isNotBlank() && cantidad.isNotBlank() && fecha.isNotBlank()) {
+                        productosAgregados.add(Triple(producto, cantidad, fecha))
+                        productosAgregados = productosAgregados.toMutableList()
+                    }
+
+                    // Guardar todas las ventas usando ViewModel
+                    productosAgregados.forEach { (prod, cant, fec) ->
+                        viewModel.agregarVenta(prod, cant, fec, lista, listaIdSeleccionado) {
+                            onGuardarVenta(prod, cant, fec, lista, listaIdSeleccionado)
+                        }
+                    }
+
+                    // Limpiar lista y campos
+                    productosAgregados.clear()
+                    productosAgregados = productosAgregados.toMutableList()
+
+                    producto = ""
+                    cantidad = ""
+                    fecha = ""
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -181,6 +230,7 @@ fun AgregarVentaPantalla(
             Spacer(modifier = Modifier.height(20.dp))
         }
 
+        // Iconos para volver e inicio
         IconButton(
             onClick = onVolverAHistorial,
             modifier = Modifier
