@@ -160,26 +160,35 @@ fun ListaSeleccionadaPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Button(
-                    onClick = onAgregarProducto,
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D6D))
-                ) {
-                    Text("Añadir Producto", color = Color.White)
-                }
+            Spacer(modifier = Modifier.height(24.dp))
 
-                Button(
-                    onClick = { mostrarDialogoConfirmacion = true },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-                ) {
-                    Text("Eliminar Lista", color = Color.White)
-                }
+// Botones uno debajo del otro, estilo uniforme
+            Button(
+                onClick = onAgregarProducto,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D6D))
+            ) {
+                Text("Añadir Producto", color = Color.White)
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = { mostrarDialogoConfirmacion = true },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD32F2F)) // rojo
+            ) {
+                Text("Eliminar Lista", color = Color.White)
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+
+
 
             Spacer(modifier = Modifier.height(24.dp))
         }

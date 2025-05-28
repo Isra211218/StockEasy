@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -13,8 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -28,7 +31,7 @@ import com.example.stockeasy.viewmodel.ListaViewModel
 fun AgregarListaPantalla(
     onVolver: () -> Unit,
     onIrAlInicio: () -> Unit,
-    onGuardarLista: () -> Boolean // Este método debe hacer la navegación a menu_listas
+    onGuardarLista: () -> Boolean
 ) {
     val context = LocalContext.current
     val viewModel: ListaViewModel = viewModel(
@@ -42,6 +45,7 @@ fun AgregarListaPantalla(
     var mostrarErrorDescripcion by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Box(
         modifier = Modifier
@@ -85,6 +89,13 @@ fun AgregarListaPantalla(
                 label = { Text("Nombre de la lista") },
                 isError = mostrarErrorNombre,
                 singleLine = true,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { keyboardController?.hide() }
+                ),
                 modifier = Modifier.fillMaxWidth()
             )
             if (mostrarErrorNombre) {
@@ -105,10 +116,16 @@ fun AgregarListaPantalla(
                 },
                 label = { Text("Descripción") },
                 isError = mostrarErrorDescripcion,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { keyboardController?.hide() }
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text)
+                    .height(120.dp)
             )
             if (mostrarErrorDescripcion) {
                 Text(
@@ -130,7 +147,7 @@ fun AgregarListaPantalla(
 
                     if (nombreValido && descripcionValida) {
                         viewModel.agregarLista(nombreLista, descripcionLista) {
-                            onGuardarLista() // ✅ Esta es la navegación correcta después de guardar
+                            onGuardarLista()
                         }
                     }
                 },
