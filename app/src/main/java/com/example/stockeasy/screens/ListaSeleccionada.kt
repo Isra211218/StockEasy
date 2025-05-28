@@ -31,6 +31,7 @@ fun ListaSeleccionadaPantalla(
     listaId: Int,
     onVolver: () -> Unit,
     onIrAlInicio: () -> Unit,
+    onIrAlMenuListas: () -> Unit, // <--- NUEVO
     onAgregarProducto: () -> Unit,
     onEditarProducto: (Int) -> Unit,
 ) {
@@ -192,7 +193,7 @@ fun ListaSeleccionadaPantalla(
                     TextButton(onClick = {
                         listaViewModel.eliminarLista(listaId) {
                             mostrarDialogoConfirmacion = false
-                            onIrAlInicio()
+                            onIrAlMenuListas()
                         }
                     }) {
                         Text("Eliminar", color = Color.Red)

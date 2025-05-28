@@ -33,7 +33,7 @@ fun AgregarVentaPantalla(
     LaunchedEffect(Unit) {
         viewModel.cargarNombresListas()
     }
-
+    var listaIdSeleccionado by remember { mutableStateOf(listaId) }
     var producto by remember { mutableStateOf("") }
     var cantidad by remember { mutableStateOf("") }
     var fecha by remember { mutableStateOf("") }
@@ -96,8 +96,10 @@ fun AgregarVentaPantalla(
                             onClick = {
                                 lista = nombreLista
                                 expandedLista = false
-                                producto = ""
-                                viewModel.cargarProductosDeLista(nombreLista)
+                                viewModel.cargarProductosDeLista(nombreLista) { id ->
+                                    listaIdSeleccionado = id
+                                    producto = "" // Limpiar producto después de cargar los nuevos productos
+                                }
                             }
                         )
                     }
@@ -164,8 +166,8 @@ fun AgregarVentaPantalla(
 
             Button(
                 onClick = {
-                    viewModel.agregarVenta(producto, cantidad, fecha, lista, listaId) {
-                        onGuardarVenta(producto, cantidad, fecha, lista, listaId)
+                    viewModel.agregarVenta(producto, cantidad, fecha, lista, listaIdSeleccionado) {
+                        onGuardarVenta(producto, cantidad, fecha, lista, listaIdSeleccionado)
                     }
                 },
                 modifier = Modifier

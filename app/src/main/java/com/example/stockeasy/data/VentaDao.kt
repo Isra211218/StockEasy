@@ -3,7 +3,7 @@ package com.example.stockeasy.data
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.stockeasy.data.VentaEntity
+
 
 @Dao
 interface VentaDao {

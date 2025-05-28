@@ -60,6 +60,8 @@ fun EditarProductoPantalla(
     val cambiosHechos = (nombre.isNotBlank() && nombre != productoInicial) ||
             (cantidad.isNotBlank() && cantidad != cantidadInicial) ||
             imagenCambiada
+    var mostrarDialogoConfirmacion by remember { mutableStateOf(false) }
+
 
     val scrollState = rememberScrollState()
 
@@ -175,6 +177,39 @@ fun EditarProductoPantalla(
             }
 
             Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = { mostrarDialogoConfirmacion = true },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD32F2F)) // rojo
+            ) {
+                Text("Eliminar Producto", color = Color.White)
+            }
+
+            if (mostrarDialogoConfirmacion) {
+                AlertDialog(
+                    onDismissRequest = { mostrarDialogoConfirmacion = false },
+                    title = { Text("Confirmar eliminación") },
+                    text = { Text("¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.") },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            viewModel.eliminarProducto(productoId) {
+                                mostrarDialogoConfirmacion = false
+                                onVolver() // vuelve a la pantalla anterior
+                            }
+                        }) {
+                            Text("Eliminar", color = Color.Red)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { mostrarDialogoConfirmacion = false }) {
+                            Text("Cancelar")
+                        }
+                    }
+                )
+            }
         }
 
         IconButton(

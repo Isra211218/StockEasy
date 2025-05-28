@@ -67,4 +67,16 @@ class ProductoViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun eliminarProducto(id: Int, onFinish: () -> Unit) {
+        viewModelScope.launch {
+            val producto = productoDao.obtenerProductoPorId(id)
+            if (producto != null) {
+                productoDao.eliminarProducto(producto)
+                cargarProductos(producto.listaId)
+            }
+            onFinish()
+        }
+    }
+
+
 }

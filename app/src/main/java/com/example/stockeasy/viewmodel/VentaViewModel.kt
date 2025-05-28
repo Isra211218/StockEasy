@@ -36,17 +36,20 @@ class VentaViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun cargarProductosDeLista(nombreLista: String) {
+    fun cargarProductosDeLista(nombreLista: String, onListaIdObtenido: (Int) -> Unit) {
         viewModelScope.launch {
             val lista = listaDao.buscarPorNombre(nombreLista.lowercase().trim())
             if (lista != null) {
                 val productos = productoDao.obtenerProductosDeLista(lista.id).map { it.nombre }
                 _productosDeLista.value = productos
+                onListaIdObtenido(lista.id)
             } else {
                 _productosDeLista.value = emptyList()
+                onListaIdObtenido(0)
             }
         }
     }
+
     fun agregarVenta(
         producto: String,
         cantidad: String,

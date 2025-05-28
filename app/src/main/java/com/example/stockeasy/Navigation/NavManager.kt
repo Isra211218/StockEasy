@@ -108,12 +108,18 @@ fun NavManager(navController: NavHostController) {
                         popUpTo("menu_principal") { inclusive = false }
                     }
                 },
+                onIrAlMenuListas = {
+                    navController.navigate("menu_listas") {
+                        popUpTo("menu_listas") { inclusive = true }
+                    }
+                },
                 onAgregarProducto = {
                     navController.navigate("nuevo_producto/$listaId")
                 },
                 onEditarProducto = { productoId ->
                     navController.navigate("editar_producto/$productoId/$listaId")
                 }
+
             )
         }
 
