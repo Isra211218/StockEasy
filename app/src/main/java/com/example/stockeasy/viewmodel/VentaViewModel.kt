@@ -13,6 +13,9 @@ class VentaViewModel(application: Application) : AndroidViewModel(application) {
     private val db = StockEasyDatabase.getDatabase(application)
     private val ventaDao = db.ventaDao()
     private val productoDao = db.productoDao()
+    private val _productosDeLista = MutableStateFlow<List<String>>(emptyList())
+    val productosDeLista: StateFlow<List<String>> = _productosDeLista
+
 
     private val _ventas = MutableStateFlow<List<VentaEntity>>(emptyList())
     val ventas: StateFlow<List<VentaEntity>> = _ventas
@@ -33,6 +36,17 @@ class VentaViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun cargarProductosDeLista(nombreLista: String) {
+        viewModelScope.launch {
+            val lista = listaDao.buscarPorNombre(nombreLista.lowercase().trim())
+            if (lista != null) {
+                val productos = productoDao.obtenerProductosDeLista(lista.id).map { it.nombre }
+                _productosDeLista.value = productos
+            } else {
+                _productosDeLista.value = emptyList()
+            }
+        }
+    }
     fun agregarVenta(
         producto: String,
         cantidad: String,

@@ -28,6 +28,8 @@ fun AgregarVentaPantalla(
 ) {
     val viewModel: VentaViewModel = viewModel()
     val listasDisponibles by viewModel.nombresListas.collectAsState()
+    val productosDisponibles by viewModel.productosDeLista.collectAsState()
+
     LaunchedEffect(Unit) {
         viewModel.cargarNombresListas()
     }
@@ -66,13 +68,77 @@ fun AgregarVentaPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            OutlinedTextField(
-                value = producto,
-                onValueChange = { producto = it },
-                label = { Text("Producto") },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
+            // Primero: Lista
+            var expandedLista by remember { mutableStateOf(false) }
+
+            ExposedDropdownMenuBox(
+                expanded = expandedLista,
+                onExpandedChange = { expandedLista = !expandedLista }
+            ) {
+                OutlinedTextField(
+                    value = lista,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Lista") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedLista) },
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
+                )
+
+                ExposedDropdownMenu(
+                    expanded = expandedLista,
+                    onDismissRequest = { expandedLista = false }
+                ) {
+                    listasDisponibles.forEach { nombreLista ->
+                        DropdownMenuItem(
+                            text = { Text(nombreLista) },
+                            onClick = {
+                                lista = nombreLista
+                                expandedLista = false
+                                producto = ""
+                                viewModel.cargarProductosDeLista(nombreLista)
+                            }
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Segundo: Producto
+            var expandedProducto by remember { mutableStateOf(false) }
+
+            ExposedDropdownMenuBox(
+                expanded = expandedProducto,
+                onExpandedChange = { expandedProducto = !expandedProducto }
+            ) {
+                OutlinedTextField(
+                    value = producto,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Producto") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedProducto) },
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
+                )
+
+                ExposedDropdownMenu(
+                    expanded = expandedProducto,
+                    onDismissRequest = { expandedProducto = false }
+                ) {
+                    productosDisponibles.forEach { nombreProducto ->
+                        DropdownMenuItem(
+                            text = { Text(nombreProducto) },
+                            onClick = {
+                                producto = nombreProducto
+                                expandedProducto = false
+                            }
+                        )
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -94,42 +160,6 @@ fun AgregarVentaPantalla(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            var expanded by remember { mutableStateOf(false) }
-
-            ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = { expanded = !expanded }
-            ) {
-                OutlinedTextField(
-                    value = lista,
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("Lista") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                    modifier = Modifier
-                        .menuAnchor()
-                        .fillMaxWidth()
-                )
-
-                ExposedDropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    listasDisponibles.forEach { nombreLista ->
-                        DropdownMenuItem(
-                            text = { Text(nombreLista) },
-                            onClick = {
-                                lista = nombreLista
-                                expanded = false
-                            }
-                        )
-                    }
-                }
-            }
-
-
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
@@ -149,7 +179,6 @@ fun AgregarVentaPantalla(
             Spacer(modifier = Modifier.height(20.dp))
         }
 
-        // Botones superiores
         IconButton(
             onClick = onVolverAHistorial,
             modifier = Modifier

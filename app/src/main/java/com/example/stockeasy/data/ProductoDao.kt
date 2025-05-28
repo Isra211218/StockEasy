@@ -22,4 +22,7 @@ interface ProductoDao {
     @Query("SELECT * FROM productos WHERE id = :id LIMIT 1")
     suspend fun obtenerProductoPorId(id: Int): ProductoEntity?
 
+    @Query("SELECT nombre FROM productos WHERE listaId = :listaId")
+    suspend fun obtenerNombresPorLista(listaId: Int): List<String>
+
 }
