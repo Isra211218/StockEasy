@@ -14,4 +14,7 @@ interface ListaDao {
     @Insert
     suspend fun insertarLista(lista: ListaEntity): Long
 
+    @Query("SELECT nombre FROM listas")
+    suspend fun obtenerNombresListas(): List<String>
+
 }

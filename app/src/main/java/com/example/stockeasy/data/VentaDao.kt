@@ -12,4 +12,5 @@ interface VentaDao {
 
     @Query("SELECT * FROM ventas ORDER BY fecha DESC")
     suspend fun obtenerTodas(): List<VentaEntity>
+
 }

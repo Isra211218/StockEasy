@@ -16,6 +16,16 @@ class VentaViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _ventas = MutableStateFlow<List<VentaEntity>>(emptyList())
     val ventas: StateFlow<List<VentaEntity>> = _ventas
+    private val listaDao = db.listaDao() // Asegúrate de tener esta línea
+
+    private val _nombresListas = MutableStateFlow<List<String>>(emptyList())
+    val nombresListas: StateFlow<List<String>> = _nombresListas
+
+    fun cargarNombresListas() {
+        viewModelScope.launch {
+            _nombresListas.value = listaDao.obtenerNombresListas()
+        }
+    }
 
     fun cargarVentas() {
         viewModelScope.launch {

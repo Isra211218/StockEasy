@@ -18,6 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stockeasy.R
 import com.example.stockeasy.viewmodel.VentaViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AgregarVentaPantalla(
     listaId: Int,
@@ -26,6 +27,10 @@ fun AgregarVentaPantalla(
     onVolverAlMenu: () -> Unit
 ) {
     val viewModel: VentaViewModel = viewModel()
+    val listasDisponibles by viewModel.nombresListas.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.cargarNombresListas()
+    }
 
     var producto by remember { mutableStateOf("") }
     var cantidad by remember { mutableStateOf("") }
@@ -91,13 +96,39 @@ fun AgregarVentaPantalla(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            OutlinedTextField(
-                value = lista,
-                onValueChange = { lista = it },
-                label = { Text("Lista") },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
+            var expanded by remember { mutableStateOf(false) }
+
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = { expanded = !expanded }
+            ) {
+                OutlinedTextField(
+                    value = lista,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Lista") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
+                )
+
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    listasDisponibles.forEach { nombreLista ->
+                        DropdownMenuItem(
+                            text = { Text(nombreLista) },
+                            onClick = {
+                                lista = nombreLista
+                                expanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
 
             Spacer(modifier = Modifier.height(24.dp))
 
