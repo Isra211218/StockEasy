@@ -38,6 +38,7 @@ class VentaViewModel(application: Application) : AndroidViewModel(application) {
         cantidad: String,
         fecha: String,
         nombreLista: String,
+        listaId: Int,
         onFinish: () -> Unit
     ) {
         viewModelScope.launch {
