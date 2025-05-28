@@ -45,24 +45,26 @@ class ProductoViewModel(application: Application) : AndroidViewModel(application
 
     fun actualizarProducto(
         id: Int,
-        nombre: String,
-        cantidad: Int,
-        imagenBase64: String,
+        nombre: String?,
+        cantidad: Int?,
+        imagenBase64: String?,
         listaId: Int,
         onFinish: () -> Unit
     ) {
         viewModelScope.launch {
-            val nombreSanitizado = nombre.trim().lowercase()
-            val productoActualizado = ProductoEntity(
-                id = id,
-                nombre = nombreSanitizado,
-                cantidad = cantidad,
-                imagenBase64 = imagenBase64,
-                listaId = listaId
-            )
-            productoDao.actualizarProducto(productoActualizado)
-            cargarProductos(listaId)
+            val productoExistente = productoDao.obtenerProductoPorId(id)
+            if (productoExistente != null) {
+                val productoActualizado = productoExistente.copy(
+                    nombre = nombre?.takeIf { it.isNotBlank() }?.trim()?.lowercase() ?: productoExistente.nombre,
+                    cantidad = cantidad ?: productoExistente.cantidad,
+                    imagenBase64 = imagenBase64 ?: productoExistente.imagenBase64
+                    // listaId no lo actualizamos porque no debería cambiar, pero si quieres, usa: listaId
+                )
+                productoDao.actualizarProducto(productoActualizado)
+                cargarProductos(listaId)
+            }
             onFinish()
         }
     }
+
 }

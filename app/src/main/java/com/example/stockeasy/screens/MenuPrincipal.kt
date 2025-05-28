@@ -72,15 +72,18 @@ fun MenuPrincipalPantalla(
             onClick = onNavigateToHistorialVentas
         )
 
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.weight(1f))
 
-        MenuOption(
+        // Nuevo botón "Editar Perfil" estilo SmallButton
+        SmallButton(
             iconResId = R.drawable.usuario,
             text = "Editar Perfil",
-            onClick = onNavigateToEditarPerfil
+            color = Color(0xFFB0BEC5),
+            onClick = onNavigateToEditarPerfil,
+            alignStart = false
         )
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(12.dp))
 
         SmallButton(
             iconResId = R.drawable.exit,
@@ -93,6 +96,7 @@ fun MenuPrincipalPantalla(
         Spacer(modifier = Modifier.height(24.dp))
     }
 }
+
 
 @Composable
 fun MenuOption(

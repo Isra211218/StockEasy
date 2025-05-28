@@ -29,17 +29,18 @@ fun EditarProductoPantalla(
     productoId: Int,
     productoInicial: String = "",
     cantidadInicial: String = "",
+    imagenInicial: String = "", // ← NUEVO
     listaId: Int = 0,
     onGuardarCambios: (String, String) -> Unit,
     onVolver: () -> Unit,
     onIrAlInicio: () -> Unit
-) {
+){
     val viewModel: ProductoViewModel = viewModel()
     val context = LocalContext.current
 
     var nombre by remember { mutableStateOf(productoInicial) }
     var cantidad by remember { mutableStateOf(cantidadInicial) }
-    var imagenBase64 by remember { mutableStateOf("") }
+    var imagenBase64 by remember { mutableStateOf(imagenInicial) }
     var imagenCambiada by remember { mutableStateOf(false) }
 
     val launcher = rememberLauncherForActivityResult(
@@ -153,15 +154,18 @@ fun EditarProductoPantalla(
 
             Button(
                 onClick = {
-                    val nombreSanitizado = nombre.trim().lowercase()
+                    val nombreFinal = if (nombre.trim().isNotEmpty()) nombre.trim() else productoInicial
+                    val cantidadFinal = if (cantidad.trim().isNotEmpty()) cantidad.trim() else cantidadInicial
+                    val imagenFinal = if (imagenCambiada) imagenBase64 else imagenInicial
+
                     viewModel.actualizarProducto(
                         id = productoId,
-                        nombre = nombreSanitizado,
-                        cantidad = cantidad.toIntOrNull() ?: 0,
-                        imagenBase64 = imagenBase64,
+                        nombre = if (nombre.isBlank() || nombre == productoInicial) null else nombre.trim(),
+                        cantidad = if (cantidad.isBlank() || cantidad == cantidadInicial) null else cantidad.toIntOrNull(),
+                        imagenBase64 = if (imagenCambiada) imagenBase64 else null,
                         listaId = listaId
                     ) {
-                        onGuardarCambios(nombreSanitizado, cantidad)
+                        onGuardarCambios(nombre, cantidad)
                     }
                 },
                 enabled = cambiosHechos,

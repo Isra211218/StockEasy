@@ -18,4 +18,8 @@ interface ProductoDao {
 
     @Query("SELECT * FROM productos WHERE LOWER(nombre) = LOWER(:nombre) AND listaId = :listaId LIMIT 1")
     suspend fun buscarPorNombreEnLista(nombre: String, listaId: Int): ProductoEntity?
+
+    @Query("SELECT * FROM productos WHERE id = :id LIMIT 1")
+    suspend fun obtenerProductoPorId(id: Int): ProductoEntity?
+
 }

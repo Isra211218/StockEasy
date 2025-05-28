@@ -8,7 +8,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+
 
 @RunWith(AndroidJUnit4::class)
 class ProductoDaoTest {

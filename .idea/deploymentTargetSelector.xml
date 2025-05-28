@@ -5,10 +5,10 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="ProductoDaoTest">
+      <SelectionState runConfigName="escribirEnCampoProducto()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="escribirEnCampoProducto()">
+      <SelectionState runConfigName="insertarYLeerProducto()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
