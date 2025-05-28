@@ -151,7 +151,7 @@ fun EditarProductoPantalla(
             }
 
             Spacer(modifier = Modifier.height(32.dp))
-
+//Editar producto
             Button(
                 onClick = {
 
