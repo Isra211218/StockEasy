@@ -111,16 +111,32 @@ fun ListaSeleccionadaPantalla(
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 val imageBitmap = remember(producto.imagenBase64) {
-                                    val bytes = Base64.decode(producto.imagenBase64, Base64.DEFAULT)
-                                    BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
+                                    try {
+                                        if (!producto.imagenBase64.isNullOrBlank()) {
+                                            val bytes = Base64.decode(producto.imagenBase64, Base64.DEFAULT)
+                                            BitmapFactory.decodeByteArray(bytes, 0, bytes.size)?.asImageBitmap()
+                                        } else null
+                                    } catch (e: Exception) {
+                                        null
+                                    }
                                 }
-                                imageBitmap?.let {
+
+                                if (imageBitmap != null) {
                                     Image(
-                                        bitmap = it,
+                                        bitmap = imageBitmap,
                                         contentDescription = producto.nombre,
                                         modifier = Modifier.size(50.dp)
                                     )
+                                } else {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.no_photos),
+                                        contentDescription = "Imagen no disponible",
+                                        modifier = Modifier.size(50.dp)
+                                    )
                                 }
+
+                                Spacer(modifier = Modifier.width(12.dp))
+
                                 Column {
                                     Text(
                                         text = "Producto: ${producto.nombre}",
