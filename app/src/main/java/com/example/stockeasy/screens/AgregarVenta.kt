@@ -180,7 +180,7 @@ fun AgregarVentaPantalla(
                 onClick = {
                     if (producto.isNotBlank() && cantidad.isNotBlank() && fecha.isNotBlank()) {
                         productosAgregados.add(Triple(producto, cantidad, fecha))
-                        productosAgregados = productosAgregados.toMutableList() // disparar recomposición
+                        productosAgregados = productosAgregados.toMutableList() // disparar recomposiciónfghjkjhgfdfghjkjhgfvcd
                         producto = ""
                         cantidad = ""
                         fecha = ""
@@ -198,7 +198,7 @@ fun AgregarVentaPantalla(
             // Botón para guardar todas las ventas
             Button(
                 onClick = {
-                    // Agregar el producto actual si hay datos
+                    // Agregar el producto actual si hay datfghjkjhgos
                     if (producto.isNotBlank() && cantidad.isNotBlank() && fecha.isNotBlank()) {
                         productosAgregados.add(Triple(producto, cantidad, fecha))
                         productosAgregados = productosAgregados.toMutableList()
