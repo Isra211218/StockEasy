@@ -47,21 +47,17 @@ fun NavManager(navController: NavHostController, isLoggedIn: Boolean) {
                 onNavigateToHistorialVentas = { navController.navigate("historial_ventas") },
                 onNavigateToEditarPerfil = { navController.navigate("editar_perfil") },
                 onLogout = {
-                    // Borrar sesión al cerrar sesión
                     val sharedPref = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
                     with(sharedPref.edit()) {
                         putBoolean("is_logged_in", false)
                         apply()
                     }
-
-                    // Volver a pantalla de inicio de sesión
                     navController.navigate("inicio_sesion") {
                         popUpTo("inicio_sesion") { inclusive = true }
                     }
                 }
             )
         }
-
 
         composable("editar_perfil") {
             EditarPerfilPantalla(
@@ -133,7 +129,6 @@ fun NavManager(navController: NavHostController, isLoggedIn: Boolean) {
                 onEditarProducto = { productoId ->
                     navController.navigate("editar_producto/$productoId/$listaId")
                 }
-
             )
         }
 
@@ -175,7 +170,9 @@ fun NavManager(navController: NavHostController, isLoggedIn: Boolean) {
                     navController.navigate("agregar_venta/0")
                 },
                 onVolverAlMenu = {
-                    navController.popBackStack()
+                    navController.navigate("menu_principal") {
+                        popUpTo("menu_principal") { inclusive = false }
+                    }
                 },
                 listaId = 0
             )
@@ -188,7 +185,9 @@ fun NavManager(navController: NavHostController, isLoggedIn: Boolean) {
                     navController.navigate("agregar_venta/$listaId")
                 },
                 onVolverAlMenu = {
-                    navController.popBackStack()
+                    navController.navigate("menu_principal") {
+                        popUpTo("menu_principal") { inclusive = false }
+                    }
                 },
                 listaId = listaId
             )
@@ -200,12 +199,12 @@ fun NavManager(navController: NavHostController, isLoggedIn: Boolean) {
                 listaId = listaId,
                 onGuardarVenta = { _, _, _, _, _ ->
                     navController.navigate("historial_ventas/$listaId") {
-                        popUpTo("historial_ventas/$listaId") { inclusive = true }
+                        popUpTo("menu_principal") { inclusive = false }
                     }
                 },
                 onVolverAHistorial = {
                     navController.navigate("historial_ventas/$listaId") {
-                        popUpTo("historial_ventas/$listaId") { inclusive = true }
+                        popUpTo("menu_principal") { inclusive = false }
                     }
                 },
                 onVolverAlMenu = {
