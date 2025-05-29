@@ -5,8 +5,10 @@ import android.graphics.BitmapFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -63,6 +65,11 @@ fun NuevoProductoPantalla(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .border(
+                    width = 5.dp,
+                    color = Color(0xFF2196F3),
+                    shape = RoundedCornerShape(16.dp)
+                )
                 .padding(horizontal = 16.dp)
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -70,7 +77,7 @@ fun NuevoProductoPantalla(
             Spacer(modifier = Modifier.height(80.dp))
 
             Image(
-                painter = painterResource(id = R.drawable.producto),
+                painter = painterResource(id = R.drawable.order),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()

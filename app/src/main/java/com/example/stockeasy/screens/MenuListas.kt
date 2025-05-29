@@ -1,6 +1,8 @@
 package com.example.stockeasy.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -12,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -24,6 +27,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stockeasy.R
 import com.example.stockeasy.data.ListaEntity
 import com.example.stockeasy.viewmodel.ListaViewModel
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
 
 @Composable
 fun MenuListasPantalla(
@@ -45,20 +50,27 @@ fun MenuListasPantalla(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(top = 64.dp),
+                .border(
+                    width = 5.dp,
+                    color = Color(0xFF2196F3), // Azul llamativo
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .padding(16.dp)
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.height(48.dp))
+
             Image(
-                painter = painterResource(id = R.drawable.lista),
+                painter = painterResource(id = R.drawable.checklist_photoroom),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(140.dp),
+                    .height(250.dp),
                 contentScale = ContentScale.Fit
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             Text(
                 text = "Mis Listas",
@@ -67,6 +79,27 @@ fun MenuListasPantalla(
                 color = Color(0xFF2E7D6D),
                 textAlign = TextAlign.Center
             )
+
+            Spacer(modifier = Modifier.height(12.dp)) // Espacio pequeño antes del botón
+
+            // Botón centrado justo debajo de "Mis Listas"
+            Button(
+                onClick = onAgregarLista,
+                modifier = Modifier
+                    .width(180.dp)
+                    .height(44.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D6D))
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(id = R.drawable.agregar),
+                        contentDescription = "Agregar lista",
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text("Agregar Lista", color = Color.White)
+                }
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -107,7 +140,8 @@ fun MenuListasPantalla(
                             .fillMaxWidth()
                             .padding(vertical = 6.dp)
                             .clickable { onSeleccionarLista(lista) },
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD)),
+                        border = BorderStroke(1.dp, Color(0xFF2E7D6D)) // Contorno verde para cada tarjeta
                     ) {
                         Row(
                             modifier = Modifier
@@ -128,31 +162,6 @@ fun MenuListasPantalla(
                                 modifier = Modifier.size(20.dp)
                             )
                         }
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                Button(
-                    onClick = onAgregarLista,
-                    modifier = Modifier
-                        .width(180.dp)
-                        .height(44.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D6D))
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(
-                            painter = painterResource(id = R.drawable.agregar),
-                            contentDescription = "Agregar lista",
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text("Agregar Lista", color = Color.White)
                     }
                 }
             }

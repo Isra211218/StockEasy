@@ -1,8 +1,10 @@
 package com.example.stockeasy.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -42,18 +44,38 @@ fun HistorialVentasPantalla(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(top = 64.dp),
+                .border(
+                    width = 5.dp,
+                    color = Color(0xFF2196F3), // Azul llamativo
+                    shape = RoundedCornerShape(16.dp) // Bordes redondeados
+                )
+                .padding(16.dp)
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                IconButton(
+                    onClick = onVolverAlMenu,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(top = 4.dp, end = 4.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.home),
+                        contentDescription = "Volver al menú",
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             Image(
-                painter = painterResource(id = R.drawable.ventas),
+                painter = painterResource(id = R.drawable.order_2104172),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp)
+                    .height(200.dp)
                     .padding(vertical = 16.dp),
                 contentScale = ContentScale.Fit
             )
@@ -67,6 +89,26 @@ fun HistorialVentasPantalla(
                 textAlign = TextAlign.Center,
                 color = Color(0xFF2E7D6D)
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = { onAgregarVenta(listaId) },
+                modifier = Modifier
+                    .width(280.dp)
+                    .height(48.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D6D))
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(id = R.drawable.venta),
+                        contentDescription = "Agregar venta",
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Agregar venta", color = Color.White)
+                }
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -109,39 +151,6 @@ fun HistorialVentasPantalla(
             }
 
             Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
-                onClick = {onAgregarVenta(listaId)},
-                modifier = Modifier
-                    .width(280.dp)
-                    .height(48.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D6D))
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.venta),
-                        contentDescription = "Agregar venta",
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Agregar venta", color = Color.White)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-        }
-
-        IconButton(
-            onClick = onVolverAlMenu,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(top = 8.dp, end = 4.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.home),
-                contentDescription = "Volver al menú",
-                modifier = Modifier.size(28.dp)
-            )
         }
     }
 }

@@ -3,8 +3,10 @@ package com.example.stockeasy.screens
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,18 +25,17 @@ import com.example.stockeasy.R
 import com.example.stockeasy.viewmodel.ProductoViewModel
 import android.util.Base64
 
-
 @Composable
 fun EditarProductoPantalla(
     productoId: Int,
     productoInicial: String = "",
     cantidadInicial: String = "",
-    imagenInicial: String = "", // ← NUEVO
+    imagenInicial: String = "",
     listaId: Int = 0,
     onGuardarCambios: (String, String) -> Unit,
     onVolver: () -> Unit,
     onIrAlInicio: () -> Unit
-){
+) {
     val viewModel: ProductoViewModel = viewModel()
     val context = LocalContext.current
 
@@ -62,7 +63,6 @@ fun EditarProductoPantalla(
             imagenCambiada
     var mostrarDialogoConfirmacion by remember { mutableStateOf(false) }
 
-
     val scrollState = rememberScrollState()
 
     Box(
@@ -73,14 +73,19 @@ fun EditarProductoPantalla(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
+                .border(
+                    width = 5.dp,
+                    color = Color(0xFF2196F3),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .padding(16.dp)
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(80.dp))
 
             Image(
-                painter = painterResource(id = R.drawable.producto),
+                painter = painterResource(id = R.drawable.prototype_18281536),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -133,9 +138,7 @@ fun EditarProductoPantalla(
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = {
-                    launcher.launch("image/*")
-                },
+                onClick = { launcher.launch("image/*") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -153,10 +156,9 @@ fun EditarProductoPantalla(
             }
 
             Spacer(modifier = Modifier.height(32.dp))
-//Editar producto
+
             Button(
                 onClick = {
-
                     viewModel.actualizarProducto(
                         id = productoId,
                         nombre = if (nombre.isBlank() || nombre == productoInicial) null else nombre.trim(),
@@ -183,7 +185,7 @@ fun EditarProductoPantalla(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD32F2F)) // rojo
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD32F2F))
             ) {
                 Text("Eliminar Producto", color = Color.White)
             }
@@ -197,7 +199,7 @@ fun EditarProductoPantalla(
                         TextButton(onClick = {
                             viewModel.eliminarProducto(productoId) {
                                 mostrarDialogoConfirmacion = false
-                                onVolver() // vuelve a la pantalla anterior
+                                onVolver()
                             }
                         }) {
                             Text("Eliminar", color = Color.Red)

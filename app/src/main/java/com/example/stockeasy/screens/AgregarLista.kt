@@ -2,6 +2,7 @@ package com.example.stockeasy.screens
 
 import android.app.Application
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -26,6 +27,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stockeasy.R
 import com.example.stockeasy.viewmodel.ListaViewModel
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 @Composable
 fun AgregarListaPantalla(
@@ -55,12 +57,19 @@ fun AgregarListaPantalla(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(top = 64.dp),
+                .border(
+                    width = 5.dp,
+                    color = Color(0xFF2196F3),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .padding(16.dp)
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.height(48.dp))
+
             Image(
-                painter = painterResource(id = R.drawable.lista),
+                painter = painterResource(id = R.drawable.add),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()

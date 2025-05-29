@@ -1,9 +1,12 @@
 package com.example.stockeasy.screens
 
 import android.annotation.SuppressLint
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -24,11 +27,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.activity.ComponentActivity
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stockeasy.R
 import com.example.stockeasy.viewmodel.ColorViewModel
 import com.example.stockeasy.viewmodel.UsuarioViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @SuppressLint("ContextCastToActivity")
 @Composable
@@ -49,24 +51,28 @@ fun EditarPerfilPantalla(
     var confirmarContrasenaVisible by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
-
     var expanded by remember { mutableStateOf(false) }
     val opcionesColor = listOf("Blanco", "Gris claro", "Azul celeste")
-
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        contentAlignment = Alignment.TopCenter
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
                 .verticalScroll(scrollState)
-                .padding(top = 64.dp, start = 16.dp, end = 16.dp),
+                .border(
+                    width = 5.dp,
+                    color = Color(0xFF2196F3),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .padding(16.dp)
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(64.dp))
 
             Image(
                 painter = painterResource(id = R.drawable.profile_user),
@@ -156,7 +162,6 @@ fun EditarPerfilPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Selector de color de fondo
             Text("Color de fondo:", fontWeight = FontWeight.SemiBold)
             Spacer(modifier = Modifier.height(4.dp))
 

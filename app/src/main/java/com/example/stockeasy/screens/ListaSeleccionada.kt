@@ -3,9 +3,11 @@ package com.example.stockeasy.screens
 import android.graphics.BitmapFactory
 import android.util.Base64
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -31,7 +33,7 @@ fun ListaSeleccionadaPantalla(
     listaId: Int,
     onVolver: () -> Unit,
     onIrAlInicio: () -> Unit,
-    onIrAlMenuListas: () -> Unit, // <--- NUEVO
+    onIrAlMenuListas: () -> Unit,
     onAgregarProducto: () -> Unit,
     onEditarProducto: (Int) -> Unit,
 ) {
@@ -55,18 +57,23 @@ fun ListaSeleccionadaPantalla(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
+                .border(
+                    width = 5.dp,
+                    color = Color(0xFF2196F3),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .padding(16.dp)
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(64.dp))
 
             Image(
-                painter = painterResource(id = R.drawable.lista),
+                painter = painterResource(id = R.drawable.features),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp)
+                    .height(200.dp)
                     .padding(vertical = 16.dp),
                 contentScale = ContentScale.Fit
             )
@@ -87,6 +94,19 @@ fun ListaSeleccionadaPantalla(
                 color = Color.Gray,
                 textAlign = TextAlign.Center
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón movido aquí justo debajo de la descripción
+            Button(
+                onClick = onAgregarProducto,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D6D))
+            ) {
+                Text("Añadir Producto", color = Color.White)
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -160,21 +180,6 @@ fun ListaSeleccionadaPantalla(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-// Botones uno debajo del otro, estilo uniforme
-            Button(
-                onClick = onAgregarProducto,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D6D))
-            ) {
-                Text("Añadir Producto", color = Color.White)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             Button(
                 onClick = { mostrarDialogoConfirmacion = true },
                 modifier = Modifier
@@ -184,11 +189,6 @@ fun ListaSeleccionadaPantalla(
             ) {
                 Text("Eliminar Lista", color = Color.White)
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-
-
 
             Spacer(modifier = Modifier.height(24.dp))
         }

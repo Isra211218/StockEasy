@@ -1,8 +1,10 @@
 package com.example.stockeasy.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -26,77 +28,87 @@ fun MenuPrincipalPantalla(
 ) {
     val scrollState = rememberScrollState()
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(16.dp),
+        contentAlignment = Alignment.TopCenter
     ) {
-        Spacer(modifier = Modifier.height(80.dp))
-
-        Image(
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo de la app",
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(160.dp)
-                .padding(vertical = 16.dp),
-            contentScale = ContentScale.Fit
-        )
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .border(
+                    width = 5.dp,
+                    color = Color(0xFF2196F3),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(64.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Logo de la app",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .padding(vertical = 16.dp),
+                contentScale = ContentScale.Fit
+            )
 
-        Text(
-            text = "Diseñada para facilitar tu vida al tener control de tus espacios personales.",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
-            textAlign = TextAlign.Center,
-            color = Color(0xFF424242),
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Diseñada para facilitar tu vida al tener control de tus espacios personales.",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center,
+                color = Color(0xFF424242),
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
 
-        MenuOption(
-            iconResId = R.drawable.lista,
-            text = "Listas",
-            onClick = onNavigateToListas
-        )
+            Spacer(modifier = Modifier.height(24.dp))
 
-        Spacer(modifier = Modifier.height(15.dp))
+            MenuOption(
+                iconResId = R.drawable.lista,
+                text = "Listas",
+                onClick = onNavigateToListas
+            )
 
-        MenuOption(
-            iconResId = R.drawable.historial,
-            text = "Historial de Ventas",
-            onClick = onNavigateToHistorialVentas
-        )
+            Spacer(modifier = Modifier.height(15.dp))
 
-        Spacer(modifier = Modifier.weight(1f))
+            MenuOption(
+                iconResId = R.drawable.historial,
+                text = "Historial de Ventas",
+                onClick = onNavigateToHistorialVentas
+            )
 
-        // Nuevo botón "Editar Perfil" estilo SmallButton
-        SmallButton(
-            iconResId = R.drawable.usuario,
-            text = "Editar Perfil",
-            color = Color(0xFFB0BEC5),
-            onClick = onNavigateToEditarPerfil,
-            alignStart = false
-        )
+            Spacer(modifier = Modifier.weight(1f))
 
-        Spacer(modifier = Modifier.height(12.dp))
+            SmallButton(
+                iconResId = R.drawable.usuario,
+                text = "Editar Perfil",
+                color = Color(0xFFB0BEC5),
+                onClick = onNavigateToEditarPerfil,
+                alignStart = false
+            )
 
-        SmallButton(
-            iconResId = R.drawable.exit,
-            text = "Cerrar sesión",
-            color = Color(0xFFB0BEC5),
-            onClick = onLogout,
-            alignStart = false
-        )
+            Spacer(modifier = Modifier.height(12.dp))
 
-        Spacer(modifier = Modifier.height(24.dp))
+            SmallButton(
+                iconResId = R.drawable.exit,
+                text = "Cerrar sesión",
+                color = Color(0xFFB0BEC5),
+                onClick = onLogout,
+                alignStart = false
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
     }
 }
-
 
 @Composable
 fun MenuOption(
