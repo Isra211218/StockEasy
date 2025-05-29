@@ -14,7 +14,8 @@ class AgregarVentaUITest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun escribirEnCampoProducto() {
+    fun escribirCantidadCorrectamente() {
+        // Carga la pantalla
         composeTestRule.setContent {
             AgregarVentaPantalla(
                 listaId = 1,
@@ -24,10 +25,10 @@ class AgregarVentaUITest {
             )
         }
 
-        // Escribir "coca" en el campo "Producto"
-        composeTestRule.onNodeWithText("Producto").performTextInput("coca")
+        // Escribe "5" en el campo "Cantidad"
+        composeTestRule.onNodeWithText("Cantidad").performTextInput("5")
 
-        // Verificar que el campo contiene el texto
-        composeTestRule.onNodeWithText("Producto").assertTextContains("coca")
+        // Verifica que el campo contiene "5"
+        composeTestRule.onNodeWithText("Cantidad").assertTextContains("5")
     }
 }
