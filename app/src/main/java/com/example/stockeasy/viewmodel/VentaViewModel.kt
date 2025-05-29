@@ -1,6 +1,7 @@
 package com.example.stockeasy.viewmodel
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.stockeasy.data.StockEasyDatabase
@@ -11,10 +12,11 @@ import kotlinx.coroutines.launch
 
 class VentaViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val context = application.applicationContext
     private val db = StockEasyDatabase.getDatabase(application)
-    private val ventaDao   = db.ventaDao()
+    private val ventaDao = db.ventaDao()
     private val productoDao = db.productoDao()
-    private val listaDao    = db.listaDao()
+    private val listaDao = db.listaDao()
 
     private val _productosDeLista = MutableStateFlow<List<String>>(emptyList())
     val productosDeLista: StateFlow<List<String>> = _productosDeLista
@@ -34,9 +36,10 @@ class VentaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun cargarProductosDeLista(nombreLista: String, onListaIdObtenido: (Int) -> Unit) = viewModelScope.launch {
-        val lista = listaDao.buscarPorNombre(nombreLista.lowercase().trim())
+        val lista = listaDao.buscarPorNombre(nombreLista)
         if (lista != null) {
-            _productosDeLista.value = productoDao.obtenerProductosDeLista(lista.id).map { it.nombre }
+            val productos = productoDao.obtenerProductosDeLista(lista.id)
+            _productosDeLista.value = productos.map { it.nombre }
             onListaIdObtenido(lista.id)
         } else {
             _productosDeLista.value = emptyList()
@@ -57,13 +60,26 @@ class VentaViewModel(application: Application) : AndroidViewModel(application) {
         val cantidadVendida = cantidad.toIntOrNull() ?: return@launch
         if (cantidadVendida <= 0) return@launch
 
-        // Actualizar stock del producto
-        listaDao.buscarPorNombre(nombreListaSanitizado)?.let { lista ->
-            productoDao.buscarPorNombreEnLista(nombreProducto, lista.id)?.let { prod ->
-                val nuevoStock = (prod.cantidad - cantidadVendida).coerceAtLeast(0)
-                productoDao.actualizarProducto(prod.copy(cantidad = nuevoStock))
-            }
+        val lista = listaDao.buscarPorNombre(nombreLista)
+        if (lista == null) {
+            Toast.makeText(context, "Lista no encontrada", Toast.LENGTH_SHORT).show()
+            return@launch
         }
+
+        val productoEnLista = productoDao.buscarPorNombreEnLista(nombreProducto, lista.id)
+        if (productoEnLista == null) {
+            Toast.makeText(context, "Producto no encontrado", Toast.LENGTH_SHORT).show()
+            return@launch
+        }
+
+        if (productoEnLista.cantidad < cantidadVendida) {
+            Toast.makeText(context, "No hay existencias suficientes", Toast.LENGTH_SHORT).show()
+            return@launch
+        }
+
+        // Actualizar stock
+        val nuevoStock = productoEnLista.cantidad - cantidadVendida
+        productoDao.actualizarProducto(productoEnLista.copy(cantidad = nuevoStock))
 
         // Insertar venta
         ventaDao.insertar(

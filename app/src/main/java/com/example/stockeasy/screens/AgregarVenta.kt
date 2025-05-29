@@ -97,6 +97,7 @@ fun AgregarVentaPantalla(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+                // Selector de Lista
                 var expandedLista by remember { mutableStateOf(false) }
 
                 ExposedDropdownMenuBox(
@@ -122,10 +123,10 @@ fun AgregarVentaPantalla(
                                 text = { Text(nombreLista) },
                                 onClick = {
                                     lista = nombreLista
+                                    producto = ""
                                     expandedLista = false
                                     viewModel.cargarProductosDeLista(nombreLista) { id ->
                                         listaIdSeleccionado = id
-                                        producto = ""
                                     }
                                 }
                             )
@@ -135,6 +136,7 @@ fun AgregarVentaPantalla(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
+                // Selector de Producto
                 var expandedProducto by remember { mutableStateOf(false) }
 
                 ExposedDropdownMenuBox(
@@ -179,7 +181,6 @@ fun AgregarVentaPantalla(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Caja Fecha con calendario desplegable y borde negro
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -239,7 +240,7 @@ fun AgregarVentaPantalla(
                     Text("Agregar", color = Color.White)
                 }
 
-                Spacer(modifier = Modifier.height(12.dp)) // Separación entre botones
+                Spacer(modifier = Modifier.height(12.dp))
 
                 Button(
                     onClick = {
