@@ -65,7 +65,8 @@ fun NavManager(navController: NavHostController) {
             MenuListasPantalla(
                 onSeleccionarLista = { lista ->
                     val nombreCodificado = Uri.encode(lista.nombre)
-                    navController.navigate("lista_seleccionada/${lista.id}/$nombreCodificado")
+                    val descripcionCodificada = Uri.encode(lista.descripcion)
+                    navController.navigate("lista_seleccionada/${lista.id}/$nombreCodificado/$descripcionCodificada")
                 },
                 onAgregarLista = {
                     navController.navigate("agregar_lista")
@@ -86,22 +87,22 @@ fun NavManager(navController: NavHostController) {
                         popUpTo("menu_principal") { inclusive = false }
                     }
                 },
-                onGuardarLista = {
-                    navController.navigate("menu_listas") {
-                        popUpTo("menu_listas") { inclusive = true }
-                    }
-                    true
+                onGuardarLista = { listaId, nombre, descripcion ->
+                    val nombreCodificado = Uri.encode(nombre)
+                    val descripcionCodificada = Uri.encode(descripcion)
+                    navController.navigate("lista_seleccionada/$listaId/$nombreCodificado/$descripcionCodificada")
                 }
             )
         }
 
-        composable("lista_seleccionada/{listaId}/{nombreLista}") { backStackEntry ->
+        composable("lista_seleccionada/{listaId}/{nombreLista}/{descripcionLista}") { backStackEntry ->
             val listaId = backStackEntry.arguments?.getString("listaId")?.toIntOrNull() ?: 0
             val nombreLista = backStackEntry.arguments?.getString("nombreLista") ?: ""
+            val descripcionLista = backStackEntry.arguments?.getString("descripcionLista") ?: ""
             ListaSeleccionadaPantalla(
                 listaId = listaId,
                 nombreLista = nombreLista,
-                descripcionLista = "Descripción de $nombreLista",
+                descripcionLista = descripcionLista,
                 onVolver = { navController.popBackStack() },
                 onIrAlInicio = {
                     navController.navigate("menu_principal") {

@@ -31,7 +31,7 @@ import com.example.stockeasy.viewmodel.ListaViewModel
 fun AgregarListaPantalla(
     onVolver: () -> Unit,
     onIrAlInicio: () -> Unit,
-    onGuardarLista: () -> Boolean
+    onGuardarLista: (Int, String, String) -> Unit
 ) {
     val context = LocalContext.current
     val viewModel: ListaViewModel = viewModel(
@@ -146,8 +146,8 @@ fun AgregarListaPantalla(
                     mostrarErrorDescripcion = !descripcionValida
 
                     if (nombreValido && descripcionValida) {
-                        viewModel.agregarLista(nombreLista, descripcionLista) {
-                            onGuardarLista()
+                        viewModel.agregarLista(nombreLista, descripcionLista) { listaId ->
+                            onGuardarLista(listaId, nombreLista, descripcionLista)
                         }
                     }
                 },

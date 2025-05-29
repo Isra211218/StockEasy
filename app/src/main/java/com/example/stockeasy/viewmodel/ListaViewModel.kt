@@ -25,11 +25,11 @@ class ListaViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun agregarLista(nombre: String, descripcion: String, onFinish: () -> Unit) {
+    fun agregarLista(nombre: String, descripcion: String, onFinish: (Int) -> Unit) {
         viewModelScope.launch {
-            listaDao.insertarLista(ListaEntity(nombre = nombre, descripcion = descripcion))
+            val listaId = listaDao.insertarLista(ListaEntity(nombre = nombre, descripcion = descripcion)).toInt()
             cargarListas()
-            onFinish()
+            onFinish(listaId)
         }
     }
 
