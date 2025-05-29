@@ -1,7 +1,10 @@
 package com.example.stockeasy.screens
 
+import android.app.DatePickerDialog
+import android.widget.DatePicker
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -11,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -19,6 +23,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stockeasy.R
 import com.example.stockeasy.viewmodel.VentaViewModel
 import androidx.compose.foundation.shape.RoundedCornerShape
+import java.text.SimpleDateFormat
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,6 +41,7 @@ fun AgregarVentaPantalla(
     LaunchedEffect(Unit) {
         viewModel.cargarNombresListas()
     }
+
     var listaIdSeleccionado by remember { mutableStateOf(listaId) }
     var producto by remember { mutableStateOf("") }
     var cantidad by remember { mutableStateOf("") }
@@ -42,20 +49,23 @@ fun AgregarVentaPantalla(
     var lista by remember { mutableStateOf("") }
 
     var productosAgregados by remember { mutableStateOf(mutableListOf<Triple<String, String, String>>()) }
-
     val scrollState = rememberScrollState()
+
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+    val dateFormat = remember { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()) }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Column( // CONTORNO agregado aquí
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .border(
                     width = 5.dp,
-                    color = Color(0xFF2196F3), // Azul llamativo
+                    color = Color(0xFF2196F3),
                     shape = RoundedCornerShape(16.dp)
                 )
                 .padding(16.dp)
@@ -67,7 +77,6 @@ fun AgregarVentaPantalla(
                     .padding(top = 64.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Todo tu contenido original sin tocar
                 Image(
                     painter = painterResource(id = R.drawable.ventas),
                     contentDescription = "Logo",
@@ -79,7 +88,12 @@ fun AgregarVentaPantalla(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Text("Agregar Venta", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D6D))
+                Text(
+                    "Agregar Venta",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF2E7D6D)
+                )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -165,20 +179,44 @@ fun AgregarVentaPantalla(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                OutlinedTextField(
-                    value = fecha,
-                    onValueChange = { fecha = it },
-                    label = { Text("Fecha") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                // Caja Fecha con calendario desplegable y borde negro
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            DatePickerDialog(
+                                context,
+                                { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+                                    calendar.set(year, month, dayOfMonth)
+                                    fecha = dateFormat.format(calendar.time)
+                                },
+                                calendar.get(Calendar.YEAR),
+                                calendar.get(Calendar.MONTH),
+                                calendar.get(Calendar.DAY_OF_MONTH)
+                            ).show()
+                        }
+                ) {
+                    OutlinedTextField(
+                        value = fecha,
+                        onValueChange = {},
+                        label = { Text("Fecha", color = Color(0xFF000000)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        readOnly = true,
+                        enabled = false,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.Black,
+                            unfocusedBorderColor = Color.Black,
+                            disabledBorderColor = Color.Black
+                        )
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 if (productosAgregados.isNotEmpty()) {
-                    Text("Productos agregados:", fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth())
-                    productosAgregados.forEachIndexed { index, (prod, cant, fec) ->
-                        Text("- $prod, Cant: $cant, Fecha: $fec", modifier = Modifier.fillMaxWidth())
+                    Text("Productos agregados:", fontWeight = FontWeight.Bold)
+                    productosAgregados.forEach { (prod, cant, fec) ->
+                        Text("- $prod, Cant: $cant, Fecha: $fec")
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                 }
@@ -195,29 +233,22 @@ fun AgregarVentaPantalla(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp)
-                        .padding(bottom = 8.dp),
+                        .height(48.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D6D))
                 ) {
                     Text("Agregar", color = Color.White)
                 }
 
+                Spacer(modifier = Modifier.height(12.dp)) // Separación entre botones
+
                 Button(
                     onClick = {
-                        if (producto.isNotBlank() && cantidad.isNotBlank() && fecha.isNotBlank()) {
-                            productosAgregados.add(Triple(producto, cantidad, fecha))
-                            productosAgregados = productosAgregados.toMutableList()
-                        }
-
                         productosAgregados.forEach { (prod, cant, fec) ->
                             viewModel.agregarVenta(prod, cant, fec, lista, listaIdSeleccionado) {
                                 onGuardarVenta(prod, cant, fec, lista, listaIdSeleccionado)
                             }
                         }
-
                         productosAgregados.clear()
-                        productosAgregados = productosAgregados.toMutableList()
-
                         producto = ""
                         cantidad = ""
                         fecha = ""

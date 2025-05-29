@@ -9,5 +9,6 @@ data class VentaEntity(
     val producto: String,
     val cantidad: String,
     val fecha: String,
-    val lista: String
+    val lista: String,
+    val listaId: Int        // ← nuevo campo
 )
