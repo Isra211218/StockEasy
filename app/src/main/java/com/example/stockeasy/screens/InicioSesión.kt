@@ -1,5 +1,6 @@
 package com.example.stockeasy.screens
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,6 +18,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,6 +39,7 @@ fun InicioSesionPantalla(
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val viewModel: UsuarioViewModel = viewModel()
+    val context = LocalContext.current
 
     var correo by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
@@ -151,6 +154,11 @@ fun InicioSesionPantalla(
                         correo = correo,
                         contrasena = contrasena,
                         onSuccess = {
+                            val sharedPref = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
+                            with (sharedPref.edit()) {
+                                putBoolean("is_logged_in", true)
+                                apply()
+                            }
                             mensajeError = null
                             onLoginSuccess()
                         },

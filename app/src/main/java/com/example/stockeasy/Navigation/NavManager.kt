@@ -1,17 +1,19 @@
 package com.example.stockeasy.Navigation
 
+import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.stockeasy.screens.*
 
 @Composable
-fun NavManager(navController: NavHostController) {
+fun NavManager(navController: NavHostController, isLoggedIn: Boolean) {
     NavHost(
         navController = navController,
-        startDestination = "inicio_sesion"
+        startDestination = if (isLoggedIn) "menu_principal" else "inicio_sesion"
     ) {
         composable("inicio_sesion") {
             InicioSesionPantalla(
@@ -38,17 +40,28 @@ fun NavManager(navController: NavHostController) {
         }
 
         composable("menu_principal") {
+            val context = LocalContext.current
+
             MenuPrincipalPantalla(
                 onNavigateToListas = { navController.navigate("menu_listas") },
                 onNavigateToHistorialVentas = { navController.navigate("historial_ventas") },
                 onNavigateToEditarPerfil = { navController.navigate("editar_perfil") },
                 onLogout = {
+                    // Borrar sesión al cerrar sesión
+                    val sharedPref = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
+                    with(sharedPref.edit()) {
+                        putBoolean("is_logged_in", false)
+                        apply()
+                    }
+
+                    // Volver a pantalla de inicio de sesión
                     navController.navigate("inicio_sesion") {
                         popUpTo("inicio_sesion") { inclusive = true }
                     }
                 }
             )
         }
+
 
         composable("editar_perfil") {
             EditarPerfilPantalla(

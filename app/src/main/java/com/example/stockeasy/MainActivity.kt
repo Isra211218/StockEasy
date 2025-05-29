@@ -18,6 +18,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val sharedPref = getSharedPreferences("user_session", MODE_PRIVATE)
+        val isLoggedIn = sharedPref.getBoolean("is_logged_in", false)
 
         setContent {
             // Aquí obtenemos el mismo ViewModel que se compartirá en toda la app
@@ -30,7 +32,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = backgroundColor // Aplicamos el color de fondo dinámicamente
                 ) {
-                    NavManager(navController = navController)
+                    NavManager(navController = navController, isLoggedIn = isLoggedIn)
+
                 }
             }
         }
